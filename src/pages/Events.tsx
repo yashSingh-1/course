@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, ChevronDown, ChevronUp, Calendar, MapPin, Clock, Users, BookOpen, CheckCircle, HelpCircle } from 'lucide-react';
+import { Calendar, MapPin } from 'lucide-react';
 
 interface HackathonModule {
   id: number;

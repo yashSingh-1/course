@@ -9,6 +9,7 @@ import ContactPage from './pages/ContactPage';
 import Events from './pages/Events';
 import CourseDetailPage from './pages/CourseDetailPage';
 import EventDetailPage from './pages/EventDetailPage';
+import { Projects } from './pages/ProjectsPage';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/projects" element={<Projects />} />
             <Route path="/events/:eventId" element={<EventDetailPage />} />
           </Routes>
         </main>
