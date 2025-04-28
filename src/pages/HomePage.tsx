@@ -98,7 +98,7 @@ const HomePage = () => {
                 to="/events"
                 className="inline-block mt-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 text-lg font-semibold"
               >
-                View Hackathons 🚀
+                View Hackathons & Events 🚀
               </Link>
             </div>
             <div className="hidden md:block">

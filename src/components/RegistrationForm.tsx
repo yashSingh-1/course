@@ -36,7 +36,7 @@ export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoad
     onError(null);
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:3000/events/${eventId}/register`, {
+      const res = await fetch(`https://propagation-be.onrender.com/events/${eventId}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
