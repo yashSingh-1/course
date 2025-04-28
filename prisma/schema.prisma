@@ -1,0 +1,212 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum EventType {
+  HACKATHON
+  WORKSHOP
+  WEBINAR
+}
+
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Event {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  type        EventType
+  startDate   DateTime
+  endDate     DateTime
+  status      EventStatus @default(UPCOMING)
+  thumbnail   String      // URL to event thumbnail
+  shortDesc   String      // Brief description for cards
+  location    String      // Can be "Online" or physical location
+  organizer   String
+  price       Float?      // Optional, for paid events
+  capacity    Int?        // Optional, for limited seats
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relation to EventDetail
+  details     EventDetail?
+
+  @@index([type])
+  @@index([status])
+  @@index([startDate])
+}
+
+model EventDetail {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  eventId         String   @unique @db.ObjectId
+  event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  // Detailed description
+  fullDescription String
+  
+  // Schedule and timeline
+  schedule        Json[]   // Array of schedule items
+  
+  // Requirements and prerequisites
+  requirements    String[]
+  prerequisites   String[]
+  
+  // Learning outcomes or goals
+  outcomes        String[]
+  
+  // Technical details
+  techStack       String[] // For hackathons
+  tools          String[] // Required software/tools
+  
+  // Resources
+  resources       Json[]   // Array of resource links and descriptions
+  
+  // Registration and prizes (for hackathons)
+  registrationUrl String?
+  prizes          Json?    // Prize details for hackathons
+  
+  // Workshop specific
+  modules         Json[]   // Course modules for workshops
+  instructor      Json?    // Instructor details for workshops
+  
+  // Common details
+  faqs           Json[]   // Frequently asked questions
+  guidelines     String[] // Event guidelines
+  
+  // Contact information
+  contactEmail   String?
+  contactPhone   String?
+  
+  // Social media and additional links
+  socialLinks    Json?    // Social media links
+  additionalUrls Json?    // Additional relevant URLs
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Course {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  subtitle        String?
+  description     String
+  thumbnail       String      // URL to course thumbnail
+  level           CourseLevel
+  status          CourseStatus @default(PUBLISHED)
+  duration        Int         // in weeks
+  price           Float
+  rating          Float       @default(0)
+  studentsEnrolled Int        @default(0)
+  
+  // Instructor details
+  instructorName  String
+  instructorTitle String?
+  instructorBio   String?
+  instructorImage String?     // URL to instructor image
+
+  // What you'll learn
+  learningOutcomes String[]
+  
+  // Prerequisites
+  prerequisites   String[]
+  
+  // Course features
+  features        String[]    // e.g., "12 weeks of instruction", "Certificate of completion"
+  
+  // Timestamps
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  syllabus        Module[]
+  faqs            CourseFAQ[]
+  
+  @@index([level])
+  @@index([status])
+  @@index([price])
+  @@index([rating])
+}
+
+model Module {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  courseId    String    @db.ObjectId
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String
+  order       Int       // For ordering modules in the syllabus
+  duration    String    // e.g., "2 weeks"
+  
+  // Module content
+  topics      Topic[]
+  
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([courseId, order])
+}
+
+model Topic {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  moduleId    String    @db.ObjectId
+  module      Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String?
+  duration    String?   // e.g., "2 hours"
+  order       Int      // For ordering topics within a module
+  
+  // Content details
+  content     Json?    // Flexible structure for various content types
+  resources   Json?    // Additional materials, links, etc.
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([moduleId, order])
+}
+
+model CourseFAQ {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  courseId    String   @db.ObjectId
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  question    String
+  answer      String
+  order       Int     // For ordering FAQs
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([courseId, order])
+}

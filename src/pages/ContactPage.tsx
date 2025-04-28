@@ -50,8 +50,8 @@ const ContactPage = () => {
               </div>
               <h3 className="text-xl font-bold mb-2">Email Us</h3>
               <p className="text-gray-600 mb-4">Our friendly team is here to help</p>
-              <a href="mailto:info@cosmostech.edu" className="text-purple-600 font-medium hover:text-purple-800 transition-colors">
-                info@cosmostech.edu
+              <a href="mailto:info@Propagation.edu" className="text-purple-600 font-medium hover:text-purple-800 transition-colors">
+                info@Propagation.edu
               </a>
             </div>
             
@@ -206,7 +206,7 @@ const ContactPage = () => {
               allowFullScreen 
               loading="lazy" 
               referrerPolicy="no-referrer-when-downgrade"
-              title="CosmosTech Academy Location"
+              title="Propagation Academy Location"
             ></iframe>
           </div>
         </div>

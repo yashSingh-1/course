@@ -10,7 +10,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
           <Rocket className="h-8 w-8 text-purple-500" />
-          <span className="text-2xl font-bold tracking-tight">Cosmos<span className="text-purple-500">Tech</span></span>
+          <span className="text-2xl font-bold tracking-tight">Propagation</span>
         </Link>
         
         {/* Desktop Navigation */}

@@ -11,7 +11,7 @@ const Footer = () => {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Rocket className="h-6 w-6 text-purple-500" />
-              <span className="text-xl font-bold">CosmosTech</span>
+              <span className="text-xl font-bold">Propagation</span>
             </div>
             <p className="text-gray-400 mb-4">
               Expanding minds through advanced education in Astrophysics and Machine Learning.
@@ -70,14 +70,14 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3">
                 <Mail size={20} className="text-purple-500 flex-shrink-0" />
-                <span className="text-gray-400">info@cosmostech.edu</span>
+                <span className="text-gray-400">info@Propagation.edu</span>
               </li>
             </ul>
           </div>
         </div>
         
         <div className="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500">
-          <p>&copy; {new Date().getFullYear()} CosmosTech Academy. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Propagation Academy. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin } from 'lucide-react';
+import { createAstronomyCourse } from '../lib/beCalls/courses.ts';
 
 interface HackathonModule {
   id: number;
@@ -57,6 +58,18 @@ const Events: React.FC = () => {
   };
   
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const createCourse = async () => {
+  //     try {
+  //       const astronomyCourse = await createAstronomyCourse()
+  //       console.log('Astronomy course created successfully:', astronomyCourse.id)
+  //     } catch (error) {
+  //       console.error('Error creating astronomy course:', error)
+  //     }
+  //   }
+  //   createCourse()
+  // }, [])
   
   const hackathons: Hackathon[] = [
     {

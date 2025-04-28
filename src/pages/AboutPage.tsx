@@ -37,7 +37,7 @@ const AboutPage = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">About CosmosTech Academy</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">About Propagation Academy</h1>
               <p className="text-xl text-gray-300 mb-6">
                 We're on a mission to make advanced education in Astrophysics and Machine Learning accessible to passionate learners worldwide.
               </p>
@@ -91,7 +91,7 @@ const AboutPage = () => {
             <div className="order-1 md:order-2">
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <p className="text-gray-700 mb-4">
-                CosmosTech Academy was founded in 2020 by Dr. Neil Thompson, a former NASA researcher who recognized the need for specialized education in advanced scientific fields that was both accessible and rigorous.
+                Propagation Academy was founded in 2020 by Dr. Neil Thompson, a former NASA researcher who recognized the need for specialized education in advanced scientific fields that was both accessible and rigorous.
               </p>
               <p className="text-gray-700 mb-4">
                 What began as a small collection of online courses has grown into a comprehensive platform offering cutting-edge education in Astrophysics and Machine Learning, taught by world-class experts who are active researchers and practitioners in their fields.
@@ -130,7 +130,7 @@ const AboutPage = () => {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Core Values</h2>
             <p className="text-xl text-purple-200 max-w-3xl mx-auto">
-              The principles that guide everything we do at CosmosTech Academy
+              The principles that guide everything we do at Propagation Academy
             </p>
           </div>
           
@@ -269,7 +269,7 @@ const AboutPage = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Join Our Community of Learners</h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-            Take the next step in your educational journey with CosmosTech Academy
+            Take the next step in your educational journey with Propagation Academy
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a href="/courses" className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-medium flex items-center justify-center transition-colors">

@@ -9,7 +9,8 @@ import ContactPage from './pages/ContactPage';
 import Events from './pages/Events';
 import CourseDetailPage from './pages/CourseDetailPage';
 import EventDetailPage from './pages/EventDetailPage';
-import { Projects } from './pages/ProjectsPage';
+import ProjectsPage from './pages/ProjectsPage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
 
 function App() {
   return (
@@ -25,7 +26,11 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/events" element={<Events />} />
-            <Route path="/projects" element={<Projects />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/:projectId" element={<ProjectDetailPage title={''} description={''} category={'Astrophysics'} submissionRequirements={{
+              github: false,
+              pdf: false
+            }} />} />
             <Route path="/events/:eventId" element={<EventDetailPage />} />
           </Routes>
         </main>

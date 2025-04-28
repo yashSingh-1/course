@@ -222,7 +222,7 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Why Choose CosmosTech Academy
+              Why Choose Propagation Academy
             </h2>
             <p className="text-xl text-purple-200 max-w-3xl mx-auto">
               We combine cutting-edge research with practical applications to
@@ -372,7 +372,7 @@ const HomePage = () => {
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                "The community and network I built through CosmosTech Academy
+                "The community and network I built through Propagation Academy
                 has been invaluable. The deep learning course content was
                 challenging but incredibly rewarding."
               </p>
