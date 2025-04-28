@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -8,12 +9,50 @@ import {
   Brain,
   Atom,
 } from "lucide-react";
+import { fetchCourses } from "../backendCalls/courses";
+
+interface Course {
+  id: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  thumbnail: string;
+  level: string;
+  status: string;
+  duration: number;
+  price: number;
+  rating: number;
+  studentsEnrolled: number;
+  instructorName: string;
+  instructorTitle?: string | null;
+  instructorBio?: string | null;
+  instructorImage?: string | null;
+  learningOutcomes: string[];
+  prerequisites: string[];
+  features: string[];
+  createdAt: string;
+  updatedAt: string;
+}
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCourses()
+      .then((data) => {
+        setCourses(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setCourses([]);
+        setLoading(false);
+      });
+  }, []);
 
   // Function to handle course card clicks
-  const handleCourseClick = (courseId: number) => {
+  const handleCourseClick = (courseId: string) => {
     navigate(`/courses/${courseId}`);
   };
 
@@ -93,122 +132,53 @@ const HomePage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Course Card 1 - now clickable */}
-            <div 
-              className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105 cursor-pointer"
-              onClick={() => handleCourseClick(1)}
-            >
-              <div className="h-48 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1614732414444-096e5f1122d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
-                  alt="Quantum Astrophysics"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center mb-2">
-                  <Atom className="h-5 w-5 text-purple-600 mr-2" />
-                  <span className="text-sm font-medium text-purple-600">
-                    Astrophysics
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold mb-2">
-                  Quantum Astrophysics: Advanced Concepts
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Explore the intersection of quantum mechanics and astrophysics
-                  with cutting-edge research and theories.
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Star className="h-5 w-5 text-yellow-500" />
-                    <span className="ml-1 text-gray-700">4.9</span>
-                    <span className="ml-1 text-gray-500">(128)</span>
+          {loading ? (
+            <div className="text-center text-gray-500 py-12">Loading...</div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {courses.slice(0, 3).map((course) => (
+                <div
+                  key={course.id}
+                  className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105 cursor-pointer"
+                  onClick={() => handleCourseClick(course.id)}
+                >
+                  <div className="h-48 overflow-hidden">
+                    <img
+                      src={course.thumbnail}
+                      alt={course.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <span className="font-bold text-gray-900">$599</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Course Card 2 - now clickable */}
-            <div 
-              className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105 cursor-pointer"
-              onClick={() => handleCourseClick(2)}
-            >
-              <div className="h-48 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                  alt="Machine Learning"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center mb-2">
-                  <Brain className="h-5 w-5 text-blue-600 mr-2" />
-                  <span className="text-sm font-medium text-blue-600">
-                    Machine Learning
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold mb-2">
-                  Advanced Neural Networks & Deep Learning
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Master the latest techniques in neural networks and deep
-                  learning with hands-on projects and real-world applications.
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Star className="h-5 w-5 text-yellow-500" />
-                    <span className="ml-1 text-gray-700">4.8</span>
-                    <span className="ml-1 text-gray-500">(215)</span>
+                  <div className="p-6">
+                    <div className="flex items-center mb-2">
+                      <Atom className="h-5 w-5 text-purple-600 mr-2" />
+                      <span className="text-sm font-medium text-purple-600">
+                        {course.level.charAt(0) + course.level.slice(1).toLowerCase()}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{course.title}</h3>
+                    <p className="text-gray-600 mb-4">{course.description}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Star className="h-5 w-5 text-yellow-500" />
+                        <span className="ml-1 text-gray-700">{course.rating}</span>
+                        <span className="ml-1 text-gray-500">
+                          ({course.studentsEnrolled})
+                        </span>
+                      </div>
+                      <span className="font-bold text-gray-900">
+                        {course.price > 0 ? `$${course.price}` : "Free"}
+                      </span>
+                    </div>
                   </div>
-                  <span className="font-bold text-gray-900">$699</span>
                 </div>
-              </div>
+              ))}
             </div>
-
-            {/* Course Card 3 - now clickable */}
-            <div 
-              className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105 cursor-pointer"
-              onClick={() => handleCourseClick(3)}
-            >
-              <div className="h-48 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"
-                  alt="Cosmology"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center mb-2">
-                  <Atom className="h-5 w-5 text-purple-600 mr-2" />
-                  <span className="text-sm font-medium text-purple-600">
-                    Astrophysics
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold mb-2">
-                  Cosmology & Dark Matter Research
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Dive into the mysteries of the universe, exploring dark
-                  matter, dark energy, and the evolution of cosmic structures.
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Star className="h-5 w-5 text-yellow-500" />
-                    <span className="ml-1 text-gray-700">4.7</span>
-                    <span className="ml-1 text-gray-500">(94)</span>
-                  </div>
-                  <span className="font-bold text-gray-900">$549</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
 
           <div className="text-center mt-12">
             <Link
-              to="/courses"
+              to={`/courses`}
               className="inline-flex items-center text-purple-600 font-medium hover:text-purple-800 transition-colors"
             >
               View All Courses <ArrowRight size={18} className="ml-2" />
