@@ -31,10 +31,10 @@ const Navbar = () => {
             About
           </Link>
           <Link
-            to="/contact"
+            to="/blog"
             className="hover:text-purple-400 transition-colors"
           >
-            Contact
+            Blogs
           </Link>
 
           <div className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-md transition-colors">

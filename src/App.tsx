@@ -13,6 +13,8 @@ import EventDetailPage from './pages/EventDetailPage';
 import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import Admin from './pages/Admin';
+import AllBlogs from './pages/AllBlogs';
+import BlogPost from './pages/BlogPost';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
             <Route path="/courses" element={<CoursesPage />} />
             <Route path="/courses/:courseId" element={<CourseDetailPage />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/blog" element={<AllBlogs />} />
+<Route path="/blog/:slug" element={<BlogPost />} />
             <Route
               path="/dashboard"
               element={
