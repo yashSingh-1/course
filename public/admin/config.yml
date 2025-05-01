@@ -11,8 +11,8 @@ backend:
 # Remove local_backend in production
 # local_backend: true
 
-site_url: https://propagation.co.in/
-display_url: https://propagation.co.in/
+site_url: https://propogation.co.in/
+display_url: https://propogation.co.in/
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
 
