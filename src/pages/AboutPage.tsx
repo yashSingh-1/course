@@ -1,5 +1,7 @@
-import React from 'react';
+
 import { Award, BookOpen, Users, Brain, Atom, Star, ArrowRight } from 'lucide-react';
+import jituImage from '../assets/jitu.jpeg';
+import yashImage from '../assets/yash.jpeg';
 
 const AboutPage = () => {
   // Team members data
@@ -7,13 +9,13 @@ const AboutPage = () => {
     {
       name: "Jitendra Yadav",
       role: "Physics & Student Scientist at Esro",
-      image: "../../assets/jitu.jpeg",
+      image: jituImage,
       bio: "A citizen scientist and space educator committed to making science accessible. With a background in physics and a passion for cosmology, I design learning experiences that ignite curiosity and empower the next generation of explorers."
     },
     {
       name: "Yash Raj Singh",
       role: "AI & ML Engineer at AmplifyXLabs",
-      image: "../../assets/yash.jpeg",
+      image: yashImage,
       bio: "Skilled AI and Machine Learning engineer at AmplifyXLabs, focusing on developing cutting-edge AI solutions and applications."
     }
   ];
