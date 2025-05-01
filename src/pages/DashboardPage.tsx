@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Clock, Award, BarChart2, Calendar, Settings, LogOut, Bell, Search, Play, CheckCircle } from 'lucide-react';
 import { SignedIn, UserButton } from '@clerk/clerk-react';
+import { useCurrentUser } from '@/lib/currentUser';
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const user = useCurrentUser();
 
   // Mock data for enrolled courses
   const enrolledCourses = [
@@ -89,23 +91,17 @@ const DashboardPage = () => {
             <div>
               <h1 className="text-3xl font-bold mb-2">Student Dashboard</h1>
               <p className="text-purple-200">Welcome back,
-                 Alex! Continue your learning journey.</p>
-                 <SignedIn>
-                  <UserButton />
-                 </SignedIn>
+                 <span className='font-bold mx-1'>
+                  {user.email}
+                  </span> Continue your learning journey.</p>
+                 
             </div>
             <div className="mt-4 md:mt-0 flex items-center space-x-4">
-              <div className="relative">
-                <Bell className="h-6 w-6 cursor-pointer hover:text-purple-300 transition-colors" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <img 
-                  src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                  alt="Profile" 
-                  className="w-10 h-10 rounded-full object-cover border-2 border-purple-500"
-                />
-                <span className="font-medium">Alex Morgan</span>
+              <div className="flex items-center space-x-2 border-2 border-purple-500 rounded-full ">
+              <SignedIn>
+                  <UserButton />
+                 </SignedIn>
+
               </div>
             </div>
           </div>

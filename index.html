@@ -5,6 +5,76 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
+
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+      // Initialize Identity Widget immediately
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.init({
+          APIUrl: "https://backlinkbotai.netlify.app/.netlify/identity",
+          locale: "en",
+        });
+
+        // Check for invite token immediately
+        const hasInviteToken = window.location.hash.includes("invite_token=");
+        const token = hasInviteToken
+          ? window.location.hash.split("invite_token=")[1]
+          : null;
+
+        if (token) {
+          console.log("Found invite token:", token);
+
+          // Show loading overlay first
+          const loadingDiv = document.createElement("div");
+          loadingDiv.innerHTML = "<div>Setting up your account...</div>";
+          document.body.appendChild(loadingDiv);
+
+          window.netlifyIdentity.on("init", (user) => {
+            if (!user) {
+              // Accept invite with force flag
+              console.log("Accepting invite and showing password setup");
+              window.netlifyIdentity
+                .acceptInvite(token, true)
+                .then(() => {
+                  document.body.removeChild(loadingDiv);
+                  window.netlifyIdentity.open("signup");
+                })
+                .catch((err) => {
+                  console.error("Accept invite error:", err);
+                  document.body.removeChild(loadingDiv);
+                  alert(
+                    "There was an error accepting your invite. Please try again or contact the administrator."
+                  );
+                });
+            }
+          });
+
+          // Handle successful signup/login
+          window.netlifyIdentity.on("signup", (user) => {
+            console.log("Signup successful, redirecting to admin");
+            window.location.href = "/admin/";
+          });
+
+          window.netlifyIdentity.on("login", (user) => {
+            console.log("Login successful, redirecting to admin");
+            window.location.href = "/admin/";
+          });
+        }
+
+        // Handle errors with more detail
+        window.netlifyIdentity.on("error", (err) => {
+          console.error("Identity error:", err);
+          console.error("Detailed error:", JSON.stringify(err, null, 2));
+          if (err?.message?.includes("Email not confirmed")) {
+            alert(
+              "Please check your email to confirm your account before logging in."
+            );
+          } else {
+            alert("An error occurred: " + (err.message || "Unknown error"));
+          }
+        });
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

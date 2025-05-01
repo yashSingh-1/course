@@ -12,6 +12,7 @@ import CourseDetailPage from './pages/CourseDetailPage';
 import EventDetailPage from './pages/EventDetailPage';
 import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/courses" element={<CoursesPage />} />
             <Route path="/courses/:courseId" element={<CourseDetailPage />} />
+            <Route path="/admin" element={<Admin />} />
             <Route
               path="/dashboard"
               element={
