@@ -29,6 +29,14 @@
           window.location.reload();
         });
       }
+
+      // Add this to debug config loading
+      window.CMS.registerEventListener({
+        name: 'onInit', // Called after initialization
+        handler: function() {
+          console.log('CMS initialized');
+        },
+      });
     </script>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>

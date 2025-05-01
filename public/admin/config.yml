@@ -1,13 +1,20 @@
 backend:
   name: git-gateway
   branch: main
+  commit_messages:
+    create: 'Create {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Upload "{{path}}"'
+    deleteMedia: 'Delete "{{path}}"'
 
-local_backend: true
+# Remove local_backend in production
+# local_backend: true
 
 site_url: https://propagation.co.in/
 display_url: https://propagation.co.in/
-media_folder: "public/images/blog"
-public_folder: "/images/blog"
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
 
 # These settings ensure proper authentication
 publish_mode: editorial_workflow
@@ -18,16 +25,16 @@ publish_webhook: "/.netlify/functions/handle-blog-publish"
 collections:
   - name: "blog"
     label: "Blog Posts"
-    folder: "content/blog"
+    folder: "src/content/blog"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - {label: "Title", name: "title", widget: "string"}
       - {label: "Publish Date", name: "date", widget: "datetime"}
       - {label: "Featured Image", name: "thumbnail", widget: "image", required: false}
-      - {label: "Author", name: "author", widget: "string", default: "xautocolddm Team"}
+      - {label: "Author", name: "author", widget: "string", default: "Propagation Team"}
       - {label: "Summary", name: "summary", widget: "text"}
-      - {label: "Tags", name: "tags", widget: "list", default: ["SEO"]}
+      - {label: "Tags", name: "tags", widget: "list", default: ["Physics", "AI"]}
       - {label: "Body", name: "body", widget: "markdown"}
   
   - name: "glossary"
