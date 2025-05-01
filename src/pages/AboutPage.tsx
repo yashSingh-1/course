@@ -5,28 +5,16 @@ const AboutPage = () => {
   // Team members data
   const teamMembers = [
     {
-      name: "Dr. Neil Thompson",
-      role: "Founder & Lead Astrophysics Instructor",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-      bio: "Former NASA researcher with 15+ years of experience in quantum astrophysics and dark matter research."
+      name: "Jitendra Yadav",
+      role: "Physics & Student Scientist at Esro",
+      image: "../../assets/jitu.jpeg",
+      bio: "A citizen scientist and space educator committed to making science accessible. With a background in physics and a passion for cosmology, I design learning experiences that ignite curiosity and empower the next generation of explorers."
     },
     {
-      name: "Dr. Maya Patel",
-      role: "Lead Machine Learning Instructor",
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1976&q=80",
-      bio: "AI researcher and former lead at DeepMind, specializing in neural networks and deep learning applications."
-    },
-    {
-      name: "Prof. James Wilson",
-      role: "Cosmology Department Head",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-      bio: "Renowned cosmologist with groundbreaking research in dark energy and the expansion of the universe."
-    },
-    {
-      name: "Dr. Sarah Johnson",
-      role: "NLP & Transformers Specialist",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1961&q=80",
-      bio: "Pioneer in natural language processing with extensive experience in developing transformer architectures."
+      name: "Yash Raj Singh",
+      role: "AI & ML Engineer at AmplifyXLabs",
+      image: "../../assets/yash.jpeg",
+      bio: "Skilled AI and Machine Learning engineer at AmplifyXLabs, focusing on developing cutting-edge AI solutions and applications."
     }
   ];
 
@@ -37,11 +25,11 @@ const AboutPage = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">About Propagation Academy</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">About Propagation</h1>
               <p className="text-xl text-gray-300 mb-6">
                 We're on a mission to make advanced education in Astrophysics and Machine Learning accessible to passionate learners worldwide.
               </p>
-              <div className="flex space-x-4">
+              {/* <div className="flex space-x-4">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mr-3">
                     <Users className="h-6 w-6 text-white" />
@@ -60,7 +48,7 @@ const AboutPage = () => {
                     <p className="text-gray-400">Courses</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="hidden md:block">
               <img 
@@ -91,13 +79,13 @@ const AboutPage = () => {
             <div className="order-1 md:order-2">
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <p className="text-gray-700 mb-4">
-                Propagation Academy was founded in 2020 by Dr. Neil Thompson, a former NASA researcher who recognized the need for specialized education in advanced scientific fields that was both accessible and rigorous.
+                Propagation was founded in 2025 by two passionate students - Jitendra Yadav, a physicist at Esro, and Yash Raj Singh, an AI/ML engineer at AmplifyXLabs. After experiencing firsthand the gap between traditional education and industry demands, they decided to create the platform they wished they had during their learning journey.
               </p>
               <p className="text-gray-700 mb-4">
-                What began as a small collection of online courses has grown into a comprehensive platform offering cutting-edge education in Astrophysics and Machine Learning, taught by world-class experts who are active researchers and practitioners in their fields.
+                What started as a shared vision has evolved into a comprehensive learning platform that combines theoretical foundations with practical industry experience. Our courses bridge the gap between academic knowledge and real-world applications in Physics and Machine Learning.
               </p>
               <p className="text-gray-700 mb-4">
-                Our mission is to bridge the gap between theoretical knowledge and practical application, preparing students for careers at the forefront of scientific discovery and technological innovation.
+                Our mission is simple: provide high-quality, advanced technical education that we ourselves would want to learn from. We focus on cutting-edge topics in Physics and AI/ML, designed for learners who want to go beyond the basics and develop industry-relevant skills.
               </p>
               <div className="mt-6 space-y-4">
                 <div className="flex items-start">
@@ -105,8 +93,8 @@ const AboutPage = () => {
                     <Atom className="h-5 w-5 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold">Cutting-Edge Curriculum</h3>
-                    <p className="text-gray-600">Regularly updated with the latest scientific discoveries and technological advancements</p>
+                    <h3 className="font-bold">Industry-Driven Content</h3>
+                    <p className="text-gray-600">Courses designed from real-world experience and current industry practices</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -114,8 +102,8 @@ const AboutPage = () => {
                     <Brain className="h-5 w-5 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold">Practical Application</h3>
-                    <p className="text-gray-600">Focus on hands-on projects and real-world problem solving</p>
+                    <h3 className="font-bold">Practical Excellence</h3>
+                    <p className="text-gray-600">Focus on hands-on projects and real-world problem solving that actually matters</p>
                   </div>
                 </div>
               </div>
@@ -206,7 +194,7 @@ const AboutPage = () => {
             <div>
               <h2 className="text-3xl font-bold mb-6">Our Achievements</h2>
               <p className="text-gray-700 mb-8">
-                Since our founding, we've helped thousands of students advance their careers and contribute to groundbreaking research in their fields.
+                Since our founding, we've helped students advance their careers and contribute to groundbreaking research in their fields.
               </p>
               <div className="space-y-6">
                 <div className="flex items-center">
@@ -214,7 +202,7 @@ const AboutPage = () => {
                     <Award className="h-8 w-8 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">Educational Excellence Award 2024</h3>
+                    <h3 className="font-bold text-lg">Educational Excellence</h3>
                     <p className="text-gray-600">Recognized for innovation in specialized online education</p>
                   </div>
                 </div>
@@ -223,7 +211,7 @@ const AboutPage = () => {
                     <Users className="h-8 w-8 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">10,000+ Graduates</h3>
+                    <h3 className="font-bold text-lg">74+ Graduates</h3>
                     <p className="text-gray-600">Working at leading research institutions and tech companies</p>
                   </div>
                 </div>
@@ -232,7 +220,7 @@ const AboutPage = () => {
                     <Brain className="h-8 w-8 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">50+ Research Publications</h3>
+                    <h3 className="font-bold text-lg">12+ Research Publications</h3>
                     <p className="text-gray-600">Contributed to by our instructors and students</p>
                   </div>
                 </div>

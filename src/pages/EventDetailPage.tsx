@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Clock, Users, ExternalLink, HelpCircle, CheckCircle, ChevronUp } from 'lucide-react';
 import { fetchEventById } from '../backendCalls/fetchEvents';
 import { RegistrationForm } from '../components/RegistrationForm';
+import { useCurrentUser } from "../lib/currentUser";
 
 interface EventResource {
   title: string;
@@ -63,6 +64,11 @@ interface Event {
   details: EventDetails;
 }
 
+interface User {
+  id: string;
+  email: string;
+}
+
 const EventDetailPage: React.FC = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const [event, setEvent] = useState<Event | null>(null);
@@ -73,7 +79,13 @@ const EventDetailPage: React.FC = () => {
   const [registerLoading, setRegisterLoading] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState<string | null>(null);
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
   
+  const currentUser = useCurrentUser();
+
+  // console.log("from event detail page",currentUser);
+
   useEffect(() => {
     if (eventId) {
       setLoading(true);
@@ -85,6 +97,18 @@ const EventDetailPage: React.FC = () => {
         .catch(() => setLoading(false));
     }
   }, [eventId]);
+
+  useEffect(() => {
+    if (!currentUser) { 
+      navigate("/");
+    }
+    setUser({
+      id: currentUser.id,
+      email: currentUser.email,
+    });
+  }, [currentUser.isLoaded]);
+
+  // console.log("from event detail page",user);
   
   const toggleFaq = (faqIdx: number) => {
     setExpandedFaqs((prev) =>
@@ -346,13 +370,17 @@ const EventDetailPage: React.FC = () => {
             {registerSuccess ? (
               <div className="text-green-600 font-semibold text-center mb-4">{registerSuccess}</div>
             ) : (
-              <RegistrationForm
-                eventId={event.id}
-                onSuccess={(msg: string) => setRegisterSuccess(msg)}
-                onError={(msg: string) => setRegisterError(msg)}
+              user?.email && user?.id && (
+                <RegistrationForm
+                  email={user.email}
+                  id={user.id}
+                  eventId={event.id}
+                  onSuccess={(msg: string) => setRegisterSuccess(msg)}
+                  onError={(msg: string) => setRegisterError(msg)}
                 loading={registerLoading}
                 setLoading={setRegisterLoading}
-              />
+                />
+              )
             )}
             {registerError && <div className="text-red-600 text-center mt-2">{registerError}</div>}
           </div>

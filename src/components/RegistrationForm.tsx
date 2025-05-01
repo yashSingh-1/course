@@ -11,10 +11,10 @@ const INTEREST_REASONS = [
   { value: "OTHER", label: "Other" },
 ];
 
-export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoading }: any) {
+export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoading, email, id }: any) {
   const [form, setForm] = useState({
     fullName: "",
-    email: "",
+    email: email,
     phoneNumber: "",
     age: "",
     occupation: "",
@@ -24,6 +24,7 @@ export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoad
     experience: "",
     expectations: "",
     questions: "",
+    id: id
   });
   const [submitted, setSubmitted] = useState(false);
 

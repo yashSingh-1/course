@@ -81,7 +81,7 @@ const CoursesPage = () => {
     const matchesCategory = activeFilter === 'all' || course.level.toLowerCase() === activeFilter.toLowerCase();
     const matchesSearch =
       course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.instructorName.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
@@ -194,7 +194,7 @@ const CoursesPage = () => {
                 </div>
                 <div className="p-6">
                   <div className="flex items-center mb-2">
-                    <Atom className="h-5 w-5 text-purple-600 mr-2" />
+                      <Atom className="h-5 w-5 text-purple-600 mr-2" />
                     <span className="text-sm font-medium text-purple-600">
                       {course.level.charAt(0) + course.level.slice(1).toLowerCase()}
                     </span>

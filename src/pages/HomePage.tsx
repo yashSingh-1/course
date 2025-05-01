@@ -272,21 +272,19 @@ const HomePage = () => {
             <div className="bg-white p-8 rounded-xl shadow-md">
               <div className="flex items-center mb-4">
                 <img
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
-                  alt="Sarah Johnson"
+                  src="https://images.unsplash.com/photo-1598346762291-aee88549193f?ixlib=rb-4.0.3"
+                  alt="Priya Sharma"
                   className="w-12 h-12 rounded-full object-cover mr-4"
                 />
                 <div>
-                  <h4 className="font-bold">Sarah Johnson</h4>
+                  <h4 className="font-bold">Priya Sharma</h4>
                   <p className="text-gray-600 text-sm">
-                    Data Scientist at SpaceX
+                    ML Engineer at Google
                   </p>
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                "The Advanced Neural Networks course completely transformed my
-                career. The hands-on projects and expert guidance helped me land
-                my dream job at SpaceX."
+                "The Computer Vision course helped me transition from backend to ML. The PyTorch projects and real-world assignments were exactly what I needed for my portfolio. Landed my dream role within months."
               </p>
               <div className="flex text-yellow-500">
                 <Star className="h-5 w-5" />
@@ -301,21 +299,19 @@ const HomePage = () => {
             <div className="bg-white p-8 rounded-xl shadow-md">
               <div className="flex items-center mb-4">
                 <img
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
-                  alt="Michael Chen"
+                  src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-4.0.3"
+                  alt="David Kim"
                   className="w-12 h-12 rounded-full object-cover mr-4"
                 />
                 <div>
-                  <h4 className="font-bold">Michael Chen</h4>
+                  <h4 className="font-bold">David Kim</h4>
                   <p className="text-gray-600 text-sm">
-                    Research Scientist at NASA
+                    Data Scientist at Amazon
                   </p>
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                "The Quantum Astrophysics course provided me with the advanced
-                knowledge I needed to contribute to cutting-edge research at
-                NASA. The instructors are truly world-class."
+                "The NLP specialization exceeded my expectations. From basic concepts to advanced transformers, everything was explained clearly. The capstone project became a key talking point in my interviews."
               </p>
               <div className="flex text-yellow-500">
                 <Star className="h-5 w-5" />
@@ -330,21 +326,19 @@ const HomePage = () => {
             <div className="bg-white p-8 rounded-xl shadow-md">
               <div className="flex items-center mb-4">
                 <img
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1976&q=80"
-                  alt="Emily Rodriguez"
+                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3"
+                  alt="Rajesh Venkataraman"
                   className="w-12 h-12 rounded-full object-cover mr-4"
                 />
                 <div>
-                  <h4 className="font-bold">Emily Rodriguez</h4>
+                  <h4 className="font-bold">Rajesh Venkataraman</h4>
                   <p className="text-gray-600 text-sm">
-                    AI Engineer at DeepMind
+                    AI Lead at Microsoft
                   </p>
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                "The community and network I built through Propagation Academy
-                has been invaluable. The deep learning course content was
-                challenging but incredibly rewarding."
+                "The Advanced AI course struck the perfect balance between theory and practice. The hands-on labs and expert sessions were invaluable for my career growth."
               </p>
               <div className="flex text-yellow-500">
                 <Star className="h-5 w-5" />

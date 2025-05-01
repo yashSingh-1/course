@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Clock, Award, BarChart2, Calendar, Settings, LogOut, Bell, Search, Play, CheckCircle } from 'lucide-react';
+import { SignedIn, UserButton } from '@clerk/clerk-react';
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -87,7 +88,11 @@ const DashboardPage = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div>
               <h1 className="text-3xl font-bold mb-2">Student Dashboard</h1>
-              <p className="text-purple-200">Welcome back, Alex! Continue your learning journey.</p>
+              <p className="text-purple-200">Welcome back,
+                 Alex! Continue your learning journey.</p>
+                 <SignedIn>
+                  <UserButton />
+                 </SignedIn>
             </div>
             <div className="mt-4 md:mt-0 flex items-center space-x-4">
               <div className="relative">
