@@ -17,16 +17,16 @@ const Footer = () => {
               Expanding minds through advanced education in Astrophysics and Machine Learning.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              {/* <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <Facebook size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              </a> */}
+              <a href="https://x.com/Propagationn" target='_blank' className="text-gray-400 hover:text-white transition-colors">
                 <Twitter size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="https://www.instagram.com/propagation.in/?hl=en" target='_blank' className="text-gray-400 hover:text-white transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="https://www.linkedin.com/company/propagationconnect/" target='_blank' className="text-gray-400 hover:text-white transition-colors">
                 <Linkedin size={20} />
               </a>
             </div>
@@ -48,11 +48,11 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Our Courses</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Quantum Astrophysics</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Advanced Machine Learning</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Cosmology Fundamentals</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Neural Networks</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Deep Learning Applications</a></li>
+              <li><a href="/courses" className="text-gray-400 hover:text-white transition-colors">Comprehensive Astronomy Program</a></li>
+              <li><a href="/courses" className="text-gray-400 hover:text-white transition-colors">AI & Machine Learning</a></li>
+              <li><a href="/courses" className="text-gray-400 hover:text-white transition-colors">Asteroid Hunting with IASC</a></li>
+              {/* <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Neural Networks</a></li> */}
+              {/* <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Deep Learning Applications</a></li> */}
             </ul>
           </div>
           
@@ -62,22 +62,26 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start space-x-3">
                 <MapPin size={20} className="text-purple-500 flex-shrink-0 mt-1" />
-                <span className="text-gray-400">123 Universe Avenue, Tech District, CA 94103</span>
+                <span className="text-gray-400">NIMS, Jaipur, Rajasthan</span>
               </li>
               <li className="flex items-center space-x-3">
-                <Phone size={20} className="text-purple-500 flex-shrink-0" />
-                <span className="text-gray-400">+1 (555) 123-4567</span>
+                <Twitter size={20} className="text-purple-500 flex-shrink-0" />
+                <a href="https://x.com/Propagationn" target='_blank' className="text-gray-400 hover:text-white transition-colors">
+                  <span className="text-gray-400">Propagation</span>
+                </a>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail size={20} className="text-purple-500 flex-shrink-0" />
-                <span className="text-gray-400">info@Propagation.edu</span>
+                <a href="mailto:propagation.connect@gmail.com" className="text-gray-400 hover:text-white transition-colors">
+                  <span className="text-gray-400">propagation.connect@gmail.com</span>
+                </a>
               </li>
             </ul>
           </div>
         </div>
         
         <div className="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Propagation Academy. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Propagation. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -87,14 +87,14 @@ const Events: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8 ">
       <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">
         Upcoming Events
       </h1>
       {loading ? (
         <div className="text-center text-gray-500 py-12">Loading...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-20">
           {events.map((event) => (
             <div
               key={event.id}
