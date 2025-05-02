@@ -86,6 +86,13 @@ const Navbar = () => {
             About
           </Link>
           <Link
+            to="/blog"
+            className="block hover:text-purple-400 transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Blogs
+          </Link>
+          <Link
             to="/contact"
             className="block hover:text-purple-400 transition-colors"
             onClick={() => setIsMenuOpen(false)}
