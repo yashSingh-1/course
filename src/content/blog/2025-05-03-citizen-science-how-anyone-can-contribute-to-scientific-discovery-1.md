@@ -12,19 +12,19 @@ tags:
   - Citizen Science
   - Community Research
 ---
-## **What Is Citizen Science?**
+# **What Is Citizen Science?**
 
 Citizen science happens when regular people collect data, make observations, or help analyze information for scientific research. The concept is simple: scientists need more eyes, ears, and hands than they have, and everyday citizens can provide this help while learning and having fun.
 
 Think of citizen science as a bridge between professional researchers and the public. Scientists design the projects and provide guidance, while volunteers contribute their time, observations, and sometimes even their analytical skills.
 
-## **Why Scientists Need Your Help**
+# **Why Scientists Need Your Help**
 
 Modern scientific challenges often require massive amounts of data from many different locations. Climate researchers need weather observations from thousands of backyards. Wildlife biologists need to know where animals are appearing across entire continents. Astronomers need people scanning countless telescope images to spot patterns.
 
 No research team could possibly collect all this information alone. But with thousands or even millions of citizen scientists contributing, these massive data collection efforts become possible.
 
-## **Types of Citizen Science Projects**
+# **Types of Citizen Science Projects**
 
 Citizen science comes in many forms to match different interests and time commitments:
 
@@ -36,7 +36,7 @@ Citizen science comes in many forms to match different interests and time commit
 
 **Problem-Solving Projects**: Use your thinking skills to solve puzzles that computers struggle with, like folding protein structures in games like Foldit, which has led to real breakthroughs in disease research.
 
-## **How to Get Started**
+# **How to Get Started**
 
 Joining the citizen science movement is easier than you might think:\
 
@@ -50,7 +50,7 @@ Joining the citizen science movement is easier than you might think:\
 
 **Start contributing**: Begin making observations or completing tasks according to the project guidelines.
 
-## **Real-World Impact**
+# **Real-World Impact**
 
 Citizen science isn't just busy work—it creates real scientific breakthroughs:
 
@@ -59,7 +59,7 @@ Citizen science isn't just busy work—it creates real scientific breakthroughs:
 * Amateur astronomers have discovered new [comets](https://en.wikipedia.org/wiki/Comet) and [asteroids](https://en.wikipedia.org/wiki/Asteroid).
 * Community water monitors have identified pollution sources that affected public policy.
 
-## **Benefits Beyond Science**
+# **Benefits Beyond Science**
 
 Participating in citizen science offers rewards beyond contributing to research:
 
@@ -73,7 +73,7 @@ Participating in citizen science offers rewards beyond contributing to research:
 
 **Empowerment**: Knowing your observations contribute to real scientific understanding gives a sense of accomplishment.
 
-## **Science for All Ages**
+# **Science for All Ages**
 
 Citizen science works for everyone—children can learn while contributing valuable observations, adults can pursue interests outside their careers, and seniors can apply lifetime knowledge to meaningful projects.
 
