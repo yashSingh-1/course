@@ -1,87 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Clock, Award, BarChart2, Calendar, Settings, LogOut, Bell, Search, Play, CheckCircle } from 'lucide-react';
 import { SignedIn, UserButton } from '@clerk/clerk-react';
 import { useCurrentUser } from '@/lib/currentUser';
+import { getUserRegistrations, UserRegistrations } from '@/lib/beCalls/userRegistrations';
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [registrations, setRegistrations] = useState<UserRegistrations>({
+    courses: [],
+    events: []
+  });
+  const [loading, setLoading] = useState(true);
   const user = useCurrentUser();
 
-  // Mock data for enrolled courses
-  const enrolledCourses = [
-    {
-      id: 1,
-      title: "Quantum Astrophysics: Advanced Concepts",
-      category: "Astrophysics",
-      progress: 65,
-      image: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
-    },
-    {
-      id: 2,
-      title: "Advanced Neural Networks & Deep Learning",
-      category: "Machine Learning",
-      progress: 42,
-      image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-    },
-    {
-      id: 3,
-      title: "Cosmology & Dark Matter Research",
-      category: "Astrophysics",
-      progress: 18,
-      image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"
-    }
-  ];
+  useEffect(() => {
+    const fetchRegistrations = async () => {
+      if (user.id) {
+        setLoading(true);
+        try {
+          const data = await getUserRegistrations(user.id);
+          setRegistrations({
+            courses: data?.courses || [],
+            events: data?.events || []
+          });
+        } catch (error) {
+          console.error('Error fetching registrations:', error);
+          setRegistrations({ courses: [], events: [] });
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
 
-  // Mock data for upcoming events
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: "Live Q&A with Dr. Neil Thompson",
-      date: "Oct 15, 2025",
-      time: "3:00 PM - 4:30 PM",
-      course: "Quantum Astrophysics"
-    },
-    {
-      id: 2,
-      title: "Workshop: Building Neural Networks from Scratch",
-      date: "Oct 18, 2025",
-      time: "1:00 PM - 3:00 PM",
-      course: "Advanced Neural Networks"
-    },
-    {
-      id: 3,
-      title: "Guest Lecture: Dark Matter Research at CERN",
-      date: "Oct 22, 2025",
-      time: "11:00 AM - 12:30 PM",
-      course: "Cosmology & Dark Matter"
-    }
-  ];
-
-  // Mock data for achievements
-  const achievements = [
-    {
-      id: 1,
-      title: "Neural Network Master",
-      description: "Completed all assignments in the Neural Networks module",
-      date: "September 28, 2025",
-      icon: <Award className="h-8 w-8 text-yellow-500" />
-    },
-    {
-      id: 2,
-      title: "Quantum Explorer",
-      description: "Finished the Quantum Mechanics fundamentals course",
-      date: "August 15, 2025",
-      icon: <Award className="h-8 w-8 text-purple-500" />
-    },
-    {
-      id: 3,
-      title: "Consistent Learner",
-      description: "Logged in for 30 consecutive days",
-      date: "July 10, 2025",
-      icon: <CheckCircle className="h-8 w-8 text-green-500" />
-    }
-  ];
+    fetchRegistrations();
+  }, [user.id]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -182,8 +135,14 @@ const DashboardPage = () => {
                       <h3 className="font-semibold text-gray-500">Courses Enrolled</h3>
                       <BookOpen className="h-6 w-6 text-purple-600" />
                     </div>
-                    <p className="text-3xl font-bold">3</p>
-                    <p className="text-sm text-gray-500 mt-2">2 Astrophysics, 1 Machine Learning</p>
+                    {loading ? (
+                      <div className="animate-pulse h-8 bg-gray-200 rounded"></div>
+                    ) : (
+                      <>
+                        <p className="text-3xl font-bold">{registrations?.courses?.length || 0}</p>
+                        <p className="text-sm text-gray-500 mt-2">Enrolled Courses</p>
+                      </>
+                    )}
                   </div>
                   <div className="bg-white rounded-xl shadow-md p-6">
                     <div className="flex items-center justify-between mb-4">
@@ -206,19 +165,137 @@ const DashboardPage = () => {
                 {/* Continue Learning */}
                 <div className="bg-white rounded-xl shadow-md p-6">
                   <h2 className="text-xl font-bold mb-6">Continue Learning</h2>
+                  {loading ? (
+                    <div className="space-y-6">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="animate-pulse flex space-x-4">
+                          <div className="w-48 h-32 bg-gray-200 rounded"></div>
+                          <div className="flex-1 space-y-4">
+                            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                            <div className="h-4 bg-gray-200 rounded"></div>
+                            <div className="h-2 bg-gray-200 rounded w-5/6"></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : registrations?.courses?.length > 0 ? (
+                    <div className="space-y-6">
+                      {registrations.courses.map(course => (
+                        <div key={course.id} className="flex flex-col md:flex-row md:items-center">
+                          <img 
+                            src={course.courseImage} 
+                            alt={course.courseName} 
+                            className="w-full md:w-48 h-32 object-cover rounded-lg mb-4 md:mb-0 md:mr-6"
+                          />
+                          <div className="flex-grow">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
+                              <div>
+                                <span className="text-sm text-purple-600 font-medium">{course.category}</span>
+                                <h3 className="font-bold">{course.courseName}</h3>
+                              </div>
+                              <button className="mt-2 md:mt-0 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors">
+                                <Play className="h-4 w-4 mr-2" /> Continue
+                              </button>
+                            </div>
+                            <div className="mt-2">
+                              <div className="flex justify-between mb-1">
+                                <span className="text-sm text-gray-600">{course.progress}% complete</span>
+                                <span className="text-sm text-gray-600">{course.progress}/100</span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                <div 
+                                  className="bg-purple-600 h-2.5 rounded-full" 
+                                  style={{ width: `${course.progress}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      No courses enrolled yet
+                    </div>
+                  )}
+                </div>
+
+                {/* Upcoming Events */}
+                <div className="bg-white rounded-xl shadow-md p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold">Upcoming Events</h2>
+                    <Link to="/calendar" className="text-purple-600 hover:text-purple-800 text-sm font-medium">View Calendar</Link>
+                  </div>
+                  {loading ? (
+                    <div className="space-y-4">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="animate-pulse flex space-x-4">
+                          <div className="h-12 w-12 bg-gray-200 rounded"></div>
+                          <div className="flex-1 space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : registrations?.events?.length > 0 ? (
+                    <div className="space-y-4">
+                      {registrations.events.map(event => (
+                        <div key={event.id} className="flex items-start p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                          <div className="bg-purple-100 text-purple-800 rounded-lg p-3 mr-4">
+                            <Calendar className="h-6 w-6" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold">{event.eventName}</h3>
+                            <p className="text-sm text-gray-600">{event.courseName}</p>
+                            <div className="flex items-center mt-2 text-sm text-gray-500">
+                              <span>{event.eventDate}</span>
+                              <span className="mx-2">•</span>
+                              <span>{event.eventTime}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      No upcoming events
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {activeTab === 'courses' && (
+              <div className="bg-white rounded-xl shadow-md p-6">
+                <h2 className="text-xl font-bold mb-6">My Courses</h2>
+                {loading ? (
                   <div className="space-y-6">
-                    {enrolledCourses.map(course => (
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="animate-pulse flex space-x-4">
+                        <div className="w-48 h-32 bg-gray-200 rounded"></div>
+                        <div className="flex-1 space-y-4">
+                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                          <div className="h-4 bg-gray-200 rounded"></div>
+                          <div className="h-2 bg-gray-200 rounded w-5/6"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : registrations?.courses?.length > 0 ? (
+                  <div className="space-y-6">
+                    {registrations.courses.map(course => (
                       <div key={course.id} className="flex flex-col md:flex-row md:items-center">
                         <img 
-                          src={course.image} 
-                          alt={course.title} 
+                          src={course.courseImage} 
+                          alt={course.courseName} 
                           className="w-full md:w-48 h-32 object-cover rounded-lg mb-4 md:mb-0 md:mr-6"
                         />
                         <div className="flex-grow">
                           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
                             <div>
                               <span className="text-sm text-purple-600 font-medium">{course.category}</span>
-                              <h3 className="font-bold">{course.title}</h3>
+                              <h3 className="font-bold">{course.courseName}</h3>
                             </div>
                             <button className="mt-2 md:mt-0 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors">
                               <Play className="h-4 w-4 mr-2" /> Continue
@@ -240,57 +317,66 @@ const DashboardPage = () => {
                       </div>
                     ))}
                   </div>
-                </div>
-
-                {/* Upcoming Events */}
-                <div className="bg-white rounded-xl shadow-md p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold">Upcoming Events</h2>
-                    <Link to="/calendar" className="text-purple-600 hover:text-purple-800 text-sm font-medium">View Calendar</Link>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No courses enrolled yet
                   </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'calendar' && (
+              <div className="bg-white rounded-xl shadow-md p-6">
+                <h2 className="text-xl font-bold mb-6">Upcoming Events</h2>
+                {loading ? (
                   <div className="space-y-4">
-                    {upcomingEvents.map(event => (
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="animate-pulse flex space-x-4">
+                        <div className="h-12 w-12 bg-gray-200 rounded"></div>
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : registrations?.events?.length > 0 ? (
+                  <div className="space-y-4">
+                    {registrations.events.map(event => (
                       <div key={event.id} className="flex items-start p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
                         <div className="bg-purple-100 text-purple-800 rounded-lg p-3 mr-4">
                           <Calendar className="h-6 w-6" />
                         </div>
                         <div>
-                          <h3 className="font-bold">{event.title}</h3>
-                          <p className="text-sm text-gray-600">{event.course}</p>
+                          <h3 className="font-bold">{event.eventName}</h3>
+                          <p className="text-sm text-gray-600">{event.courseName}</p>
                           <div className="flex items-center mt-2 text-sm text-gray-500">
-                            <span>{event.date}</span>
+                            <span>{event.eventDate}</span>
                             <span className="mx-2">•</span>
-                            <span>{event.time}</span>
+                            <span>{event.eventTime}</span>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
-              </>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No upcoming events
+                  </div>
+                )}
+              </div>
             )}
 
             {activeTab === 'achievements' && (
               <div className="bg-white rounded-xl shadow-md p-6">
                 <h2 className="text-xl font-bold mb-6">Your Achievements</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {achievements.map(achievement => (
-                    <div key={achievement.id} className="border border-gray-200 rounded-lg p-4 flex items-start">
-                      <div className="mr-4">
-                        {achievement.icon}
-                      </div>
-                      <div>
-                        <h3 className="font-bold">{achievement.title}</h3>
-                        <p className="text-sm text-gray-600 mb-2">{achievement.description}</p>
-                        <p className="text-xs text-gray-500">Earned on {achievement.date}</p>
-                      </div>
-                    </div>
-                  ))}
+                  {/* Achievements content will be populated here */}
                 </div>
               </div>
             )}
 
-            {(activeTab === 'courses' || activeTab === 'calendar' || activeTab === 'settings') && (
+            {activeTab === 'settings' && (
               <div className="bg-white rounded-xl shadow-md p-6 flex items-center justify-center min-h-[400px]">
                 <div className="text-center">
                   <h2 className="text-xl font-bold mb-2">Coming Soon</h2>

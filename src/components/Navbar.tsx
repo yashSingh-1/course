@@ -26,15 +26,15 @@ const Navbar = () => {
             Courses
           </Link>
 
-          {/* //blogs */}
-          <Link to="/about" className="hover:text-purple-400 transition-colors">
-            About
-          </Link>
           <Link
             to="/blog"
             className="hover:text-purple-400 transition-colors"
           >
             Blogs
+          </Link>
+          {/* //blogs */}
+          <Link to="/about" className="hover:text-purple-400 transition-colors">
+            About
           </Link>
 
           <div className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-md transition-colors">
@@ -72,18 +72,18 @@ const Navbar = () => {
             Home
           </Link>
           <Link
+            to="/events"
+            className="block hover:text-purple-400 transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Training
+          </Link>
+          <Link
             to="/courses"
             className="block hover:text-purple-400 transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >
             Courses
-          </Link>
-          <Link
-            to="/about"
-            className="block hover:text-purple-400 transition-colors"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            About
           </Link>
           <Link
             to="/blog"

@@ -135,41 +135,41 @@ const HomePage = () => {
           {loading ? (
             <div className="text-center text-gray-500 py-12">Loading...</div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {courses.slice(0, 3).map((course) => (
                 <div
                   key={course.id}
                   className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105 cursor-pointer"
                   onClick={() => handleCourseClick(course.id)}
                 >
-                  <div className="h-48 overflow-hidden">
-                    <img
+              <div className="h-48 overflow-hidden">
+                <img
                       src={course.thumbnail}
                       alt={course.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center mb-2">
-                      <Atom className="h-5 w-5 text-purple-600 mr-2" />
-                      <span className="text-sm font-medium text-purple-600">
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-6">
+                <div className="flex items-center mb-2">
+                  <Atom className="h-5 w-5 text-purple-600 mr-2" />
+                  <span className="text-sm font-medium text-purple-600">
                         {course.level.charAt(0) + course.level.slice(1).toLowerCase()}
-                      </span>
-                    </div>
+                  </span>
+                </div>
                     <h3 className="text-xl font-bold mb-2">{course.title}</h3>
                     <p className="text-gray-600 mb-4">{course.description}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <Star className="h-5 w-5 text-yellow-500" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Star className="h-5 w-5 text-yellow-500" />
                         <span className="ml-1 text-gray-700">{course.rating}</span>
                         <span className="ml-1 text-gray-500">
                           ({course.studentsEnrolled})
-                        </span>
-                      </div>
+                  </span>
+                </div>
                       <span className="font-bold text-gray-900">
                         {course.price > 0 ? `$${course.price}` : "Free"}
-                      </span>
-                    </div>
+                  </span>
+                </div>
                   </div>
                 </div>
               ))}
