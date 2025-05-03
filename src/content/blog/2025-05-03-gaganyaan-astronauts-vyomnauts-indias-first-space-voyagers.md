@@ -13,16 +13,15 @@ tags:
 ---
 In 2020,[ ISRO](https://www.isro.gov.in/) (Indian Space Research Organisation) and the Indian Air Force selected four test pilots as astronaut candidates for India’s[ Gaganyaan](https://www.isro.gov.in/Gaganyaan.html) mission, the nation’s first human spaceflight program.
 
-1. Group Captain Ajit Krishnan, 
-2. Group Captain Prashanth Balakrishnan Nair
-3. Group Captain Ajit Krishnan
-4. Group Captain Angad Pratap\
+1. **Group Captain Ajit Krishnan**
+2. **Group Captain Prashanth Balakrishnan Nair**
+3. **Group Captain Ajit Krishnan**
+4. **Group Captain Angad Pratap**\
    \
    are set to make history.\
    The Gaganyaan mission, slated for 2025, aims to send two to three astronauts to a 400 km low Earth orbit for seven days, using the [GSLV Mk III](https://www.isro.gov.in/GSLVmk3_CON.html) rocket. This milestone will make India the fourth nation to independently launch humans into space, following the US, Russia, and China. The selected candidates, all elite IAF test pilots, bring exceptional skills to this ambitious endeavor.
 
-## 
-1. Group Captain Ajit Krishnan
+## 1.Group Captain Ajit Krishnan
 
 ![](/images/uploads/ghvf26faaaa_qm1.png)
 
