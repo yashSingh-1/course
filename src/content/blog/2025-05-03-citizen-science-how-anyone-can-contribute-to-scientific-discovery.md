@@ -1,6 +1,6 @@
 ---
 title: "Citizen Science: How Anyone Can Contribute to Scientific Discovery"
-date: 2025-05-03T10:01:00.000Z
+date: 2025-05-03T10:04:00.000Z
 thumbnail: /images/uploads/citizen-science-1400x933-1-1-.webp
 author: Propagation Team
 summary: Science isn't just for professionals in laboratories. Everyday people
