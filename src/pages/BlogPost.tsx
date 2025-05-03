@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -60,48 +60,96 @@ const BlogPost = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Hero Section */}
-      <div className="h-96 relative overflow-hidden">
+      <div className="h-80 md:h-96 relative overflow-hidden">
         <img
           src={blog.thumbnail}
           alt={blog.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center">
-          <div className="max-w-4xl mx-auto px-6 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{blog.title}</h1>
-            <div className="flex items-center gap-4 text-gray-200">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end">
+          <div className="max-w-4xl mx-auto px-6 pb-8 text-white w-full">
+            <h1 className="text-3xl md:text-5xl font-bold mb-2 drop-shadow">{blog.title}</h1>
+            <div className="flex items-center gap-4 text-gray-200 text-sm mb-2">
               <span>{blog.author}</span>
               <span>•</span>
               <span>{new Date(blog.date).toLocaleDateString()}</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {blog.tags && blog.tags.map(tag => (
+                <span
+                  key={tag}
+                  className="bg-purple-600/80 text-white text-xs px-3 py-1 rounded-full font-medium"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="bg-white rounded-xl shadow-md p-8">
-          <div className="prose prose-lg max-w-none">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                code({ className, children }) {
-                  const match = /language-(\w+)/.exec(className || '');
-                  return match ? (
-                    <SyntaxHighlighter style={atomDark} language={match[1]}>
-                      {String(children).replace(/\n$/, '')}
-                    </SyntaxHighlighter>
-                  ) : (
-                    <code className={className}>{children}</code>
-                  );
-                }
-              }}
-            >
-              {blog.content}
-            </ReactMarkdown>
-          </div>
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-10 fade-in">
+        <div className="bg-white rounded-xl shadow-md p-6 md:p-10">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            className="prose prose-lg max-w-none prose-purple"
+            components={{
+              code({ node, inline, className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || '');
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    style={atomDark}
+                    language={match[1]}
+                    PreTag="div"
+                    className="rounded-lg my-4"
+                  >
+                    {String(children).replace(/\n$/, '')}
+                  </SyntaxHighlighter>
+                ) : (
+                  <code className="bg-gray-100 rounded px-1 py-0.5 text-purple-700" {...props}>
+                    {children}
+                  </code>
+                );
+              },
+              a({ href, children, ...props }) {
+                return (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-purple-700 underline hover:text-purple-900"
+                    {...props}
+                  >
+                    {children}
+                  </a>
+                );
+              }
+            }}
+          >
+            {blog.content}
+          </ReactMarkdown>
+        </div>
+        <div className="mt-8">
+          <Link
+            to="/blog"
+            className="inline-block text-purple-700 hover:underline font-medium"
+          >
+            ← Back to all blogs
+          </Link>
         </div>
       </div>
+      <style>
+        {`
+          .fade-in {
+            animation: fadeIn 0.7s;
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(24px);}
+            to { opacity: 1; transform: translateY(0);}
+          }
+        `}
+      </style>
     </div>
   );
 };

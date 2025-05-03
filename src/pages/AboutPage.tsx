@@ -78,7 +78,7 @@ const AboutPage = () => {
             <div className="order-1 md:order-2">
               <h2 className="text-3xl font-bold mb-6">Our Story</h2>
               <p className="text-gray-700 mb-4">
-                Propagation was founded in 2025 by two passionate students - Jitendra Yadav, a physicist at Esro, and Yash Raj Singh, an AI/ML engineer at AmplifyXLabs. After experiencing firsthand the gap between traditional education and industry demands, they decided to create the platform they wished they had during their learning journey.
+                Propagation was founded in 2025 by two passionate students - Jitendra Yadav, a Space Tutor at Esro Magica and mentor at Hexstar universe, and Yash Raj Singh, an AI/ML engineer at AmplifyXLabs. After experiencing firsthand the gap between traditional education and industry demands, they decided to create the platform they wished they had during their learning journey.
               </p>
               <p className="text-gray-700 mb-4">
                 What started as a shared vision has evolved into a comprehensive learning platform that combines theoretical foundations with practical industry experience. Our courses bridge the gap between academic knowledge and real-world applications in Physics and Machine Learning.
