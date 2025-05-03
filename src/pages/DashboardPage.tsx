@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { BookOpen, Clock, Award, BarChart2, Calendar, Settings, LogOut, Bell, Search, Play, CheckCircle } from 'lucide-react';
-import { SignedIn, UserButton } from '@clerk/clerk-react';
+import { SignedIn, useClerk, UserButton } from '@clerk/clerk-react';
 import { useCurrentUser } from '@/lib/currentUser';
-import { getUserRegistrations, UserRegistrations } from '@/lib/beCalls/userRegistrations';
+import { getUserRegistrations, UserRegistrations, type CourseRegistration, type EventRegistration } from '@/lib/beCalls/userRegistrations';
+
+type ContinueLearningItem = (CourseRegistration & { _type: 'course' }) | (EventRegistration & { _type: 'event' });
 
 const DashboardPage = () => {
+  const { signOut } = useClerk();
   const [activeTab, setActiveTab] = useState('overview');
   const [registrations, setRegistrations] = useState<UserRegistrations>({
     courses: [],
@@ -13,6 +15,7 @@ const DashboardPage = () => {
   });
   const [loading, setLoading] = useState(true);
   const user = useCurrentUser();
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchRegistrations = async () => {
@@ -20,6 +23,7 @@ const DashboardPage = () => {
         setLoading(true);
         try {
           const data = await getUserRegistrations(user.id);
+          console.log('Fetched registrations:', data);
           setRegistrations({
             courses: data?.courses || [],
             events: data?.events || []
@@ -35,6 +39,24 @@ const DashboardPage = () => {
 
     fetchRegistrations();
   }, [user.id]);
+
+  // Combine courses and events into a single array with a type tag
+  const continueLearningItems: ContinueLearningItem[] = [
+    ...registrations.courses.map(course => ({ ...course, _type: 'course' as const })),
+    ...registrations.events.map(event => ({ ...event, _type: 'event' as const })),
+  ];
+
+  const filteredContinueLearningItems = continueLearningItems.filter(item => {
+    const text = item._type === 'event'
+      ? `${item.title} ${item.shortDesc} ${item.location}`
+      : `${item.courseName} ${item.category}`;
+    return text.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+  // const calendarItems = [
+  //   ...registrations.events.map(event => ({ ...event, _type: 'event' as const })),
+  //   ...registrations.courses.map(course => ({ ...course, _type: 'course' as const })),
+  // ];
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -75,36 +97,42 @@ const DashboardPage = () => {
                   <span>Overview</span>
                 </button>
                 <button 
+                disabled
                   onClick={() => setActiveTab('courses')}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'courses' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+                  className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'courses' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <BookOpen className="h-5 w-5" />
                   <span>My Courses</span>
                 </button>
                 <button 
+                disabled
                   onClick={() => setActiveTab('calendar')}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'calendar' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+                  className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'calendar' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <Calendar className="h-5 w-5" />
                   <span>Calendar</span>
                 </button>
                 <button 
+                disabled
                   onClick={() => setActiveTab('achievements')}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'achievements' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+                  className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'achievements' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <Award className="h-5 w-5" />
                   <span>Achievements</span>
                 </button>
                 <button 
+                disabled
                   onClick={() => setActiveTab('settings')}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'settings' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+                  className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'settings' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <Settings className="h-5 w-5" />
                   <span>Settings</span>
                 </button>
               </div>
               <div className="mt-8 pt-6 border-t border-gray-200">
-                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left text-red-600 hover:bg-red-50">
+                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left text-red-600 hover:bg-red-50" onClick={ async () => {
+                  await signOut();
+                }}>
                   <LogOut className="h-5 w-5" />
                   <span>Logout</span>
                 </button>
@@ -118,9 +146,11 @@ const DashboardPage = () => {
             <div className="bg-white rounded-xl shadow-md p-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <input 
-                  type="text" 
-                  placeholder="Search for courses, lessons, or resources..." 
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  placeholder="Search for courses, lessons, or resources..."
                   className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
@@ -139,7 +169,7 @@ const DashboardPage = () => {
                       <div className="animate-pulse h-8 bg-gray-200 rounded"></div>
                     ) : (
                       <>
-                        <p className="text-3xl font-bold">{registrations?.courses?.length || 0}</p>
+                        <p className="text-3xl font-bold">{registrations?.courses?.length}</p>
                         <p className="text-sm text-gray-500 mt-2">Enrolled Courses</p>
                       </>
                     )}
@@ -149,7 +179,7 @@ const DashboardPage = () => {
                       <h3 className="font-semibold text-gray-500">Hours Studied</h3>
                       <Clock className="h-6 w-6 text-blue-600" />
                     </div>
-                    <p className="text-3xl font-bold">42.5</p>
+                    <p className="text-3xl font-bold">0</p>
                     <p className="text-sm text-gray-500 mt-2">Last 30 days</p>
                   </div>
                   <div className="bg-white rounded-xl shadow-md p-6">
@@ -157,14 +187,24 @@ const DashboardPage = () => {
                       <h3 className="font-semibold text-gray-500">Achievements</h3>
                       <Award className="h-6 w-6 text-yellow-600" />
                     </div>
-                    <p className="text-3xl font-bold">7</p>
-                    <p className="text-sm text-gray-500 mt-2">3 earned this month</p>
+                    <p className="text-3xl font-bold">0</p>
+                    <p className="text-sm text-gray-500 mt-2">0 earned this month</p>
                   </div>
                 </div>
 
                 {/* Continue Learning */}
                 <div className="bg-white rounded-xl shadow-md p-6">
-                  <h2 className="text-xl font-bold mb-6">Continue Learning</h2>
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                    <h2 className="text-xl font-bold">Continue Learning</h2>
+                    <div className="flex space-x-4 mt-2 md:mt-0">
+                      <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
+                        {registrations.courses.length} Course{registrations.courses.length !== 1 ? 's' : ''} Enrolled
+                      </span>
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+                        {registrations.events.length} Event{registrations.events.length !== 1 ? 's' : ''} Registered
+                      </span>
+                    </div>
+                  </div>
                   {loading ? (
                     <div className="space-y-6">
                       {[1, 2, 3].map((i) => (
@@ -178,54 +218,39 @@ const DashboardPage = () => {
                         </div>
                       ))}
                     </div>
-                  ) : registrations?.courses?.length > 0 ? (
-                    <div className="space-y-6">
-                      {registrations.courses.map(course => (
-                        <div key={course.id} className="flex flex-col md:flex-row md:items-center">
-                          <img 
-                            src={course.courseImage} 
-                            alt={course.courseName} 
-                            className="w-full md:w-48 h-32 object-cover rounded-lg mb-4 md:mb-0 md:mr-6"
+                  ) : filteredContinueLearningItems.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {filteredContinueLearningItems.map((item, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
+                        >
+                          <img
+                            src={item._type === 'event' ? item.thumbnail : item.courseImage}
+                            alt={item._type === 'event' ? item.title : item.courseName}
+                            className="h-40 w-full object-cover"
                           />
-                          <div className="flex-grow">
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
-                              <div>
-                                <span className="text-sm text-purple-600 font-medium">{course.category}</span>
-                                <h3 className="font-bold">{course.courseName}</h3>
-                              </div>
-                              <button className="mt-2 md:mt-0 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors">
-                                <Play className="h-4 w-4 mr-2" /> Continue
-                              </button>
-                            </div>
-                            <div className="mt-2">
-                              <div className="flex justify-between mb-1">
-                                <span className="text-sm text-gray-600">{course.progress}% complete</span>
-                                <span className="text-sm text-gray-600">{course.progress}/100</span>
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                <div 
-                                  className="bg-purple-600 h-2.5 rounded-full" 
-                                  style={{ width: `${course.progress}%` }}
-                                ></div>
-                              </div>
-                            </div>
+                          <div className="p-4 flex-1 flex flex-col">
+                            <span className={`inline-block px-2 py-1 text-xs font-bold rounded mb-2 w-fit
+                              ${item._type === 'event' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+                              {item._type === 'event' ? 'Event' : 'Course'}
+                            </span>
+                            <h3 className="text-lg font-bold mb-2">{item._type === 'event' ? item.title : item.courseName}</h3>
+                            <p className="text-gray-600 text-sm mb-4 flex-1">{item._type === 'event' ? item.shortDesc : item.category}</p>
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
                     <div className="text-center py-8 text-gray-500">
-                      No courses enrolled yet
+                      No events or courses match your search.
                     </div>
                   )}
                 </div>
 
                 {/* Upcoming Events */}
-                <div className="bg-white rounded-xl shadow-md p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold">Upcoming Events</h2>
-                    <Link to="/calendar" className="text-purple-600 hover:text-purple-800 text-sm font-medium">View Calendar</Link>
-                  </div>
+                {/* <div className="bg-white rounded-xl shadow-md p-6">
+                  <h2 className="text-xl font-bold mb-6">Upcoming Events</h2>
                   {loading ? (
                     <div className="space-y-4">
                       {[1, 2, 3].map((i) => (
@@ -238,31 +263,45 @@ const DashboardPage = () => {
                         </div>
                       ))}
                     </div>
-                  ) : registrations?.events?.length > 0 ? (
-                    <div className="space-y-4">
-                      {registrations.events.map(event => (
-                        <div key={event.id} className="flex items-start p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                          <div className="bg-purple-100 text-purple-800 rounded-lg p-3 mr-4">
-                            <Calendar className="h-6 w-6" />
-                          </div>
-                          <div>
-                            <h3 className="font-bold">{event.eventName}</h3>
-                            <p className="text-sm text-gray-600">{event.courseName}</p>
-                            <div className="flex items-center mt-2 text-sm text-gray-500">
-                              <span>{event.eventDate}</span>
-                              <span className="mx-2">•</span>
-                              <span>{event.eventTime}</span>
+                  ) : (() => {
+                    const upcomingEvents = registrations.events.filter(
+                      event => new Date(event.endDate) > new Date()
+                    );
+                    return upcomingEvents.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {upcomingEvents.map((event, index) => (
+                          <div
+                            key={index}
+                            className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
+                          >
+                            <img
+                              src={event.thumbnail}
+                              alt={event.title}
+                              className="h-40 w-full object-cover"
+                            />
+                            <div className="p-4 flex-1 flex flex-col">
+                              <span className="inline-block px-2 py-1 text-xs font-bold rounded mb-2 w-fit bg-blue-100 text-blue-700">
+                                Event
+                              </span>
+                              <h3 className="text-lg font-bold mb-2">{event.title}</h3>
+                              <p className="text-gray-600 text-sm mb-2">{event.shortDesc}</p>
+                              <div className="text-xs text-gray-500 mt-auto">
+                                <span>
+                                  {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                                </span>
+                                <span className="ml-2">{event.location}</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      No upcoming events
-                    </div>
-                  )}
-                </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        No upcoming events
+                      </div>
+                    );
+                  })()}
+                </div> */}
               </>
             )}
 
@@ -283,36 +322,24 @@ const DashboardPage = () => {
                     ))}
                   </div>
                 ) : registrations?.courses?.length > 0 ? (
-                  <div className="space-y-6">
-                    {registrations.courses.map(course => (
-                      <div key={course.id} className="flex flex-col md:flex-row md:items-center">
-                        <img 
-                          src={course.courseImage} 
-                          alt={course.courseName} 
-                          className="w-full md:w-48 h-32 object-cover rounded-lg mb-4 md:mb-0 md:mr-6"
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {registrations.courses.map((course, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
+                      >
+                        <img
+                          src={course.courseImage}
+                          alt={course.courseName}
+                          className="h-40 w-full object-cover"
                         />
-                        <div className="flex-grow">
-                          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
-                            <div>
-                              <span className="text-sm text-purple-600 font-medium">{course.category}</span>
-                              <h3 className="font-bold">{course.courseName}</h3>
-                            </div>
-                            <button className="mt-2 md:mt-0 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors">
-                              <Play className="h-4 w-4 mr-2" /> Continue
-                            </button>
-                          </div>
-                          <div className="mt-2">
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm text-gray-600">{course.progress}% complete</span>
-                              <span className="text-sm text-gray-600">{course.progress}/100</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2.5">
-                              <div 
-                                className="bg-purple-600 h-2.5 rounded-full" 
-                                style={{ width: `${course.progress}%` }}
-                              ></div>
-                            </div>
-                          </div>
+                        <div className="p-4 flex-1 flex flex-col">
+                          <span className="inline-block px-2 py-1 text-xs font-bold rounded mb-2 w-fit bg-green-100 text-green-700">
+                            Course
+                          </span>
+                          <h3 className="text-lg font-bold mb-2">{course.courseName}</h3>
+                          <p className="text-gray-600 text-sm mb-4 flex-1">{course.description}</p>
+                          {/* Optionally, add progress bar or continue button here */}
                         </div>
                       </div>
                     ))}
@@ -327,43 +354,71 @@ const DashboardPage = () => {
 
             {activeTab === 'calendar' && (
               <div className="bg-white rounded-xl shadow-md p-6">
-                <h2 className="text-xl font-bold mb-6">Upcoming Events</h2>
+                <h2 className="text-xl font-bold mb-6">Upcoming Events & Courses</h2>
                 {loading ? (
                   <div className="space-y-4">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="animate-pulse flex space-x-4">
-                        <div className="h-12 w-12 bg-gray-200 rounded"></div>
+                    {registrations.events.map((stuff , index) => (
+                      <div key={index} className="animate-pulse flex space-x-4">
+                        <div className="h-12 w-12 bg-gray-200 rounded">{stuff.title}</div>
                         <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                          <div className="h-4 bg-gray-200 rounded w-3/4">{stuff.shortDesc}</div>
+                          <div className="h-4 bg-gray-200 rounded w-1/2">{stuff.location}</div>
                         </div>
                       </div>
                     ))}
                   </div>
-                ) : registrations?.events?.length > 0 ? (
-                  <div className="space-y-4">
-                    {registrations.events.map(event => (
-                      <div key={event.id} className="flex items-start p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                        <div className="bg-purple-100 text-purple-800 rounded-lg p-3 mr-4">
-                          <Calendar className="h-6 w-6" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold">{event.eventName}</h3>
-                          <p className="text-sm text-gray-600">{event.courseName}</p>
-                          <div className="flex items-center mt-2 text-sm text-gray-500">
-                            <span>{event.eventDate}</span>
-                            <span className="mx-2">•</span>
-                            <span>{event.eventTime}</span>
+                ) : (() => {
+                  // Filter upcoming events
+                  const upcomingEvents = registrations.events
+                    .filter(event => new Date(event.endDate) > new Date())
+                    .map(event => ({ ...event, _type: 'event' as const }));
+
+                  // All courses (or filter by progress if you want)
+                  const enrolledCourses = registrations.courses
+                    .map(course => ({ ...course, _type: 'course' as const }));
+
+                  // Combine for display
+                  const calendarItems = [...upcomingEvents, ...enrolledCourses];
+
+                  return calendarItems.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {calendarItems.map(item => (
+                        <div
+                          key={item.id}
+                          className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
+                        >
+                          <img
+                            src={item._type === 'event' ? item.thumbnail : item.courseImage}
+                            alt={item._type === 'event' ? item.title : item.courseName}
+                            className="h-40 w-full object-cover"
+                          />
+                          <div className="p-4 flex-1 flex flex-col">
+                            <span className={`inline-block px-2 py-1 text-xs font-bold rounded mb-2 w-fit
+                              ${item._type === 'event' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+                              {item._type === 'event' ? 'Event' : 'Course'}
+                            </span>
+                            <h3 className="text-lg font-bold mb-2">{item._type === 'event' ? item.title : item.courseName}</h3>
+                            <p className="text-gray-600 text-sm mb-2">
+                              {item._type === 'event' ? item.shortDesc : item.category}
+                            </p>
+                            {item._type === 'event' ? (
+                              <div className="text-xs text-gray-500 mt-auto">
+                                <span>
+                                  {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
+                                </span>
+                                <span className="ml-2">{item.location}</span>
+                              </div>
+                            ) : null}
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No upcoming events
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      No upcoming events or courses
+                    </div>
+                  );
+                })()}
               </div>
             )}
 

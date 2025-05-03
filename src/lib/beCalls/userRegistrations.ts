@@ -1,21 +1,32 @@
-
-
 export interface CourseRegistration {
+  _type?: 'course';
   id: string;
   courseId: string;
   courseName: string;
   courseImage: string;
   progress: number;
   category: string;
+  description?: string;
 }
 
 export interface EventRegistration {
+  _type?: 'event';
   id: string;
-  eventId: string;
-  eventName: string;
-  eventDate: string;
-  eventTime: string;
-  courseName: string;
+  title: string;
+  shortDesc: string;
+  thumbnail: string;
+  type: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  location: string;
+  organizer: string;
+  price: number | null;
+  capacity: number | null;
+  createdAt: string;
+  updatedAt: string;
+  registrationStatus: string;
+  registrationDate: string;
 }
 
 export interface UserRegistrations {
