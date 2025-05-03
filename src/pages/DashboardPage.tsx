@@ -3,6 +3,7 @@ import { BookOpen, Clock, Award, BarChart2, Calendar, Settings, LogOut, Bell, Se
 import { SignedIn, useClerk, UserButton } from '@clerk/clerk-react';
 import { useCurrentUser } from '@/lib/currentUser';
 import { getUserRegistrations, UserRegistrations, type CourseRegistration, type EventRegistration } from '@/lib/beCalls/userRegistrations';
+import { Link } from 'react-router-dom';
 
 type ContinueLearningItem = (CourseRegistration & { _type: 'course' }) | (EventRegistration & { _type: 'event' });
 
@@ -221,6 +222,7 @@ const DashboardPage = () => {
                   ) : filteredContinueLearningItems.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {filteredContinueLearningItems.map((item, index) => (
+                        <Link to={`/events/${item.id}`} key={index}>
                         <div
                           key={index}
                           className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
@@ -239,6 +241,7 @@ const DashboardPage = () => {
                             <p className="text-gray-600 text-sm mb-4 flex-1">{item._type === 'event' ? item.shortDesc : item.category}</p>
                           </div>
                         </div>
+                        </Link>
                       ))}
                     </div>
                   ) : (
