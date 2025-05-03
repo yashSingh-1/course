@@ -11,9 +11,6 @@ summary: Science isn't just for professionals in lab coats. Citizen science
 tags:
   - Citizen Science
   - Community Research
-  - Volunteer Science
-  - Everyday Science
-  - Citizen Scientist
 ---
 
 
