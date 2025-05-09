@@ -25,7 +25,12 @@ const Navbar = () => {
           >
             Courses
           </Link>
-
+          <Link
+            to="/resources"
+            className="hover:text-purple-400 transition-colors"
+          >
+            Resources
+          </Link>
           <Link
             to="/blog"
             className="hover:text-purple-400 transition-colors"
@@ -84,6 +89,13 @@ const Navbar = () => {
             onClick={() => setIsMenuOpen(false)}
           >
             Courses
+          </Link>
+          <Link
+            to="/resources"
+            className="block hover:text-purple-400 transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Resources
           </Link>
           <Link
             to="/blog"

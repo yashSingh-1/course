@@ -15,6 +15,7 @@ import ProjectDetailPage from './pages/ProjectDetailPage';
 import Admin from './pages/Admin';
 import AllBlogs from './pages/AllBlogs';
 import BlogPost from './pages/BlogPost';
+import Resources from './pages/Resources';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
             <Route path="/courses/:courseId" element={<CourseDetailPage />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/blog" element={<AllBlogs />} />
-<Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route
               path="/dashboard"
               element={
@@ -45,6 +46,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/resources" element={<Resources />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:projectId" element={<ProjectDetailPage title={''} description={''} category={'Astrophysics'} submissionRequirements={{
               github: false,
