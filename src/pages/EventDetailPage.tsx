@@ -115,9 +115,13 @@ const EventDetailPage: React.FC = () => {
   };
 
   const handleRegisterClick = () => {
-    openSignIn({
-      redirectUrl: `https://propogation.co.in${window.location.pathname}${window.location.search}`,
-    });
+    if (currentUser?.id) {
+      setShowRegisterModal(true);
+    } else {
+      openSignIn({
+        redirectUrl: `https://propogation.co.in${window.location.pathname}${window.location.search}`,
+      });
+    }
   };
 
   if (loading) {
