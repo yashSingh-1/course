@@ -44,7 +44,7 @@ const Navbar = () => {
 
           <div className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-md transition-colors">
             <SignedOut>
-              <SignInButton />
+              <SignInButton redirectUrl={`https://propogation.co.in${window.location.pathname}${window.location.search}`} />
             </SignedOut>
             <SignedIn>
               <Link

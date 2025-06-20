@@ -38,7 +38,7 @@ function App() {
                     <DashboardPage />
                   </SignedIn>
                   <SignedOut>
-                    <RedirectToSignIn />
+                    <RedirectToSignIn signInForceRedirectUrl={`https://propogation.co.in${window.location.pathname}${window.location.search}`} />
                   </SignedOut>
                 </>
               }
