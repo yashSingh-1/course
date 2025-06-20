@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Clock, Users, ExternalLink, HelpCircle, CheckCircle, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, HelpCircle, CheckCircle, ChevronUp } from 'lucide-react';
 import { fetchEventById } from '../backendCalls/fetchEvents';
 import { RegistrationForm } from '../components/RegistrationForm';
 import { useCurrentUser } from "../lib/currentUser";
-import { RedirectToSignIn } from "@clerk/clerk-react";
 
 interface EventResource {
   title: string;
@@ -185,7 +184,9 @@ const EventDetailPage: React.FC = () => {
                   if (currentUser?.id) {
                     setShowRegisterModal(true);
                   } else {
-                    window.location.assign(`https://smart-pug-33.accounts.dev/sign-in?redirect_url=${encodeURIComponent(window.location.href)}`);
+                    const currentPath = window.location.pathname + window.location.search;
+                    const redirectUrl = `https://propogation.co.in${currentPath}`;
+                    window.location.assign(`https://smart-pug-33.accounts.dev/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`);
                   }
                 }}
                 className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
@@ -298,7 +299,9 @@ const EventDetailPage: React.FC = () => {
                     if (currentUser?.id) {
                       setShowRegisterModal(true);
                     } else {
-                      window.location.assign(`https://smart-pug-33.accounts.dev/sign-in?redirect_url=${encodeURIComponent(window.location.href)}`);
+                      const currentPath = window.location.pathname + window.location.search;
+                      const redirectUrl = `https://propogation.co.in${currentPath}`;
+                      window.location.assign(`https://smart-pug-33.accounts.dev/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`);
                     }
                   }}
                   className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
