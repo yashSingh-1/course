@@ -11,6 +11,8 @@ const INTEREST_REASONS = [
   { value: "OTHER", label: "Other" },
 ];
 
+const RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY;
+
 export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoading, email, id }: any) {
   const [form, setForm] = useState({
     fullName: "",
@@ -49,6 +51,20 @@ export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoad
       if (!res.ok) throw new Error(data.error || "Registration failed");
       setSubmitted(true);
       onSuccess("Registration successful! You'll be notified about the details of the event in your email.");
+      // Send confirmation email using Resend
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${RESEND_API_KEY}`
+        },
+        body: JSON.stringify({
+          from: "Propagation <noreply@propogation.co.in>",
+          to: form.email,
+          subject: "Registration Successful for Event",
+          html: `<p>Thank you for registering for the event! We have received your registration details.</p>`
+        })
+      });
     } catch (err: any) {
       onError(err.message);
     } finally {
