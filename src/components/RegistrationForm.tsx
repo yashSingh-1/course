@@ -59,10 +59,19 @@ export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoad
           "Authorization": `Bearer ${RESEND_API_KEY}`
         },
         body: JSON.stringify({
-          from: "Propagation <noreply@propogation.co.in>",
+          from: "Propagation <info@propogation.co.in>",
+          reply_to: "info@propogation.co.in",
           to: form.email,
-          subject: "Registration Successful for Event",
-          html: `<p>Thank you for registering for the event! We have received your registration details.</p>`
+          subject: "Your Registration for 'Explore Space: Participate in Asteroid Detection'",
+          html: `<p>Dear Participant,</p>
+                 <p>Thank you for registering for the <strong>Explore Space: Participate in Asteroid Detection</strong> event.</p>
+                 <p>We are excited to have you join us! Here are your event details:</p>
+                 <ul>
+                   <li><strong>Date:</strong> 21st (Month) at 7:00 PM</li>
+                   <li><strong>Google Meet Link:</strong> <a href="https://meet.google.com/your-meet-link">https://meet.google.com/your-meet-link</a></li>
+                 </ul>
+                 <p>If you have any questions, feel free to reply to this email at <a href="mailto:info@propogation.co.in">info@propogation.co.in</a>.</p>
+                 <p>Best regards,<br/>Propagation Team</p>`
         })
       });
     } catch (err: any) {
