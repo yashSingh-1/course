@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, MapPin, HelpCircle, CheckCircle, ChevronUp } from 
 import { fetchEventById } from '../backendCalls/fetchEvents';
 import { RegistrationForm } from '../components/RegistrationForm';
 import { useCurrentUser } from "../lib/currentUser";
+import { useClerk } from "@clerk/clerk-react";
 
 interface EventResource {
   title: string;
@@ -83,6 +84,7 @@ const EventDetailPage: React.FC = () => {
   const navigate = useNavigate();
   
   const currentUser = useCurrentUser();
+  const { openSignIn } = useClerk();
 
   useEffect(() => {
     if (eventId) {
@@ -110,6 +112,12 @@ const EventDetailPage: React.FC = () => {
     setExpandedFaqs((prev) =>
       prev.includes(faqIdx) ? prev.filter((i) => i !== faqIdx) : [...prev, faqIdx]
     );
+  };
+
+  const handleRegisterClick = () => {
+    openSignIn({
+      redirectUrl: `https://propogation.co.in${window.location.pathname}${window.location.search}`,
+    });
   };
 
   if (loading) {
@@ -180,15 +188,7 @@ const EventDetailPage: React.FC = () => {
               </div>
               
               <button
-                onClick={() => {
-                  if (currentUser?.id) {
-                    setShowRegisterModal(true);
-                  } else {
-                    const currentPath = window.location.pathname + window.location.search;
-                    const redirectUrl = `https://propogation.co.in${currentPath}`;
-                    window.location.assign(`https://smart-pug-33.accounts.dev/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`);
-                  }
-                }}
+                onClick={handleRegisterClick}
                 className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
               >
                 Register Now
@@ -295,15 +295,7 @@ const EventDetailPage: React.FC = () => {
               </div>
               <div className="flex justify-center mt-12">
                 <button
-                  onClick={() => {
-                    if (currentUser?.id) {
-                      setShowRegisterModal(true);
-                    } else {
-                      const currentPath = window.location.pathname + window.location.search;
-                      const redirectUrl = `https://propogation.co.in${currentPath}`;
-                      window.location.assign(`https://smart-pug-33.accounts.dev/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`);
-                    }
-                  }}
+                  onClick={handleRegisterClick}
                   className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
                 >
                   Register Now
