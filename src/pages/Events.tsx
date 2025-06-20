@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, MapPin, Search, Database } from 'lucide-react';
 import { fetchEvents } from '../backendCalls/fetchEvents';
 
 interface HackathonModule {
@@ -44,32 +44,9 @@ interface Event {
 }
 
 const Events: React.FC = () => {
-  const [selectedHackathon, setSelectedHackathon] = useState<Hackathon | null>(null);
-  const [activeFilter, setActiveFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'modules' | 'faqs'>('overview');
-  const [expandedModules, setExpandedModules] = useState<number[]>([]);
-  const [expandedFaqs, setExpandedFaqs] = useState<number[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  const toggleModule = (moduleId: number) => {
-    setExpandedModules(prevExpanded => 
-      prevExpanded.includes(moduleId) 
-        ? prevExpanded.filter(id => id !== moduleId)
-        : [...prevExpanded, moduleId]
-    );
-  };
-  
-  const toggleFaq = (faqId: number) => {
-    setExpandedFaqs(prevExpanded => 
-      prevExpanded.includes(faqId) 
-        ? prevExpanded.filter(id => id !== faqId)
-        : [...prevExpanded, faqId]
-    );
-  };
-  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,119 +58,91 @@ const Events: React.FC = () => {
       .catch(() => setLoading(false));
   }, []);
 
-  // Handle navigation to event detail page
+  const filteredEvents = events.filter(event =>
+    event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    event.shortDesc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    event.organizer.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const navigateToEventDetail = (eventId: string) => {
     navigate(`/events/${eventId}`);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 ">
-      <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">
-        Upcoming Events
-      </h1>
-      {loading ? (
-        <div className="text-center text-gray-500 py-12">Loading...</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-20">
-          {events.map((event) => (
-            <div
-              key={event.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={event.thumbnail}
-                alt={event.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">{event.title}</h2>
-                <div className="flex items-center mb-2">
-                  <Calendar className="h-4 w-4 text-gray-500 mr-2" />
-                  <p className="text-gray-600">
-                    {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="flex items-center mb-4">
-                  <MapPin className="h-4 w-4 text-gray-500 mr-2" />
-                  <p className="text-gray-600">{event.location}</p>
-                </div>
-                <p className="text-gray-700 mb-4">{event.shortDesc}</p>
-                <button
-                  onClick={() => navigateToEventDetail(event.id)}
-                  className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  View Details
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Detailed Event Modal */}
-      {selectedHackathon && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl overflow-auto max-w-4xl w-full max-h-[90vh]">
-            <div className="p-6">
-              <div className="flex justify-between items-start">
-                <h2 className="text-3xl font-bold text-gray-800">{selectedHackathon.title}</h2>
-                <button 
-                  onClick={() => setSelectedHackathon(null)}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
-                >
-                  &times;
-                </button>
-              </div>
-              
-              <div className="my-4">
-                <img 
-                  src={selectedHackathon.imageUrl} 
-                  alt={selectedHackathon.title}
-                  className="w-full h-64 object-cover rounded-lg"
-                />
-              </div>
-              
-              <div className="flex flex-wrap gap-4 mb-6">
-                <p className="text-gray-600 flex items-center">
-                  <span className="mr-2">📅</span> {selectedHackathon.date}
-                </p>
-                <p className="text-gray-600 flex items-center">
-                  <span className="mr-2">📍</span> {selectedHackathon.location}
-                </p>
-              </div>
-              
-              <p className="text-gray-700 mb-8 text-lg">{selectedHackathon.description}</p>
-              
-              <h3 className="text-2xl font-bold text-gray-800 mb-6">Registration Process & Event Details</h3>
-              
-              <div className="space-y-8">
-                {selectedHackathon.modules.map((module) => (
-                  <div key={module.id} className="bg-gray-50 p-6 rounded-lg">
-                    <h4 className="text-xl font-bold text-gray-800 mb-2">{module.title}</h4>
-                    <p className="text-gray-700 mb-4">{module.description}</p>
-                    <ul className="list-disc pl-6 space-y-2">
-                      {module.steps.map((step, index) => (
-                        <li key={index} className="text-gray-700">{step}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-8 text-center">
-                <a 
-                  href={selectedHackathon.registrationLink} 
-                  className="inline-block bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-colors duration-200 text-lg font-semibold"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Proceed to Registration
-                </a>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-100">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-purple-900 to-indigo-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Upcoming Events</h1>
+          <p className="text-xl text-purple-200 max-w-3xl mx-auto mb-8">
+            Discover and participate in our latest hackathons, workshops, and events.
+          </p>
+          <div className="max-w-3xl mx-auto relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <input
+              type="text"
+              placeholder="Search for events, topics, or organizers..."
+              className="w-full pl-12 pr-4 py-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </div>
-      )}
+      </section>
+
+      {/* Events Grid Section */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredEvents.map(event => (
+              <div key={event.id} className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105">
+                <div className="h-48 overflow-hidden">
+                  <img
+                    src={event.thumbnail}
+                    alt={event.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center mb-2">
+                    <Calendar className="h-5 w-5 text-purple-600 mr-2" />
+                    <span className="text-sm font-medium text-purple-600">
+                      {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">{event.title}</h3>
+                  <p className="text-gray-600 mb-4">{event.shortDesc}</p>
+                  <div className="flex items-center text-sm text-gray-500 mb-4">
+                    <MapPin className="h-4 w-4 mr-1" />
+                    <span>{event.location}</span>
+                  </div>
+                  <button
+                    className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition-colors"
+                    onClick={() => navigateToEventDetail(event.id)}
+                  >
+                    View Details
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {filteredEvents.length === 0 && !loading && (
+            <div className="text-center py-16">
+              <Database className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-bold text-gray-700 mb-2">No events found</h3>
+              <p className="text-gray-500 mb-6">Try adjusting your search criteria</p>
+              <button
+                onClick={() => setSearchQuery('')}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-colors"
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 };
