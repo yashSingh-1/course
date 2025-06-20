@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, MapPin, Clock, Users, ExternalLink, HelpCircle, Ch
 import { fetchEventById } from '../backendCalls/fetchEvents';
 import { RegistrationForm } from '../components/RegistrationForm';
 import { useCurrentUser } from "../lib/currentUser";
+import { RedirectToSignIn } from "@clerk/clerk-react";
 
 interface EventResource {
   title: string;
@@ -84,8 +85,6 @@ const EventDetailPage: React.FC = () => {
   
   const currentUser = useCurrentUser();
 
-  // console.log("from event detail page",currentUser);
-
   useEffect(() => {
     if (eventId) {
       setLoading(true);
@@ -108,8 +107,6 @@ const EventDetailPage: React.FC = () => {
     });
   }, [currentUser.isLoaded]);
 
-  // console.log("from event detail page",user);
-  
   const toggleFaq = (faqIdx: number) => {
     setExpandedFaqs((prev) =>
       prev.includes(faqIdx) ? prev.filter((i) => i !== faqIdx) : [...prev, faqIdx]
@@ -184,7 +181,13 @@ const EventDetailPage: React.FC = () => {
               </div>
               
               <button
-                onClick={() => setShowRegisterModal(true)}
+                onClick={() => {
+                  if (currentUser?.id) {
+                    setShowRegisterModal(true);
+                  } else {
+                    window.location.assign(`https://smart-pug-33.accounts.dev/sign-in?redirect_url=${encodeURIComponent(window.location.href)}`);
+                  }
+                }}
                 className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
               >
                 Register Now
@@ -291,7 +294,13 @@ const EventDetailPage: React.FC = () => {
               </div>
               <div className="flex justify-center mt-12">
                 <button
-                  onClick={() => setShowRegisterModal(true)}
+                  onClick={() => {
+                    if (currentUser?.id) {
+                      setShowRegisterModal(true);
+                    } else {
+                      window.location.assign(`https://smart-pug-33.accounts.dev/sign-in?redirect_url=${encodeURIComponent(window.location.href)}`);
+                    }
+                  }}
                   className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
                 >
                   Register Now
