@@ -193,6 +193,21 @@ const DashboardPage = () => {
                   </div>
                 </div>
 
+                <div className="bg-white rounded-xl shadow-md p-6">
+                  <h2 className="text-xl font-bold mb-4">Share Your Feedback</h2>
+                  <p className="text-gray-600 mb-6">
+                    We'd love to hear your thoughts on the 'Explore Space: Participate in Asteroid Detection' webinar. Your feedback helps us improve future events.
+                  </p>
+                  <a
+                    href="https://forms.gle/7Hv9sfsphwkBw43v7"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+                  >
+                    Fill out the Feedback Form
+                  </a>
+                </div>
+
                 {/* Continue Learning */}
                 <div className="bg-white rounded-xl shadow-md p-6">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
@@ -250,6 +265,9 @@ const DashboardPage = () => {
                     </div>
                   )}
                 </div>
+
+                {/* Feedback Form Section */}
+                
 
                 {/* Upcoming Events */}
                 {/* <div className="bg-white rounded-xl shadow-md p-6">
