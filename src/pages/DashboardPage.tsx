@@ -197,6 +197,10 @@ const DashboardPage = () => {
                   <h2 className="text-xl font-bold mb-4">Share Your Feedback</h2>
                   <p className="text-gray-600 mb-6">
                     We'd love to hear your thoughts on the 'Explore Space: Participate in Asteroid Detection' webinar. Your feedback helps us improve future events.
+                    <br />
+                    <strong className="text-gray-800">You will receive your participation certificate within 2 days of submission.</strong>
+                    <br />
+                    Also, please join our WhatsApp group for updates on future events (link at the end of the form).
                   </p>
                   <a
                     href="https://forms.gle/7Hv9sfsphwkBw43v7"
