@@ -64,6 +64,14 @@ const Events: React.FC = () => {
     event.organizer.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const sortedEvents = [...filteredEvents].sort((a, b) => {
+    const aIsPast = new Date(a.endDate) < new Date();
+    const bIsPast = new Date(b.endDate) < new Date();
+    if (aIsPast && !bIsPast) return 1;
+    if (!aIsPast && bIsPast) return -1;
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
+
   const navigateToEventDetail = (eventId: string) => {
     navigate(`/events/${eventId}`);
   };
@@ -94,41 +102,50 @@ const Events: React.FC = () => {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredEvents.map(event => (
-              <div key={event.id} className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105">
-                <div className="h-48 overflow-hidden">
-                  <img
-                    src={event.thumbnail}
-                    alt={event.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center mb-2">
-                    <Calendar className="h-5 w-5 text-purple-600 mr-2" />
-                    <span className="text-sm font-medium text-purple-600">
-                      {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
-                    </span>
+            {sortedEvents.map(event => {
+              const isPastEvent = new Date(event.endDate) < new Date();
+              return (
+                <div key={event.id} className={`bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105 ${isPastEvent ? 'filter grayscale' : ''}`}>
+                  <div className="h-48 overflow-hidden relative">
+                    {isPastEvent && (
+                      <div className="absolute top-2 right-2 bg-gray-800 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+                        COMPLETED
+                      </div>
+                    )}
+                    <img
+                      src={event.thumbnail}
+                      alt={event.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{event.title}</h3>
-                  <p className="text-gray-600 mb-4">{event.shortDesc}</p>
-                  <div className="flex items-center text-sm text-gray-500 mb-4">
-                    <MapPin className="h-4 w-4 mr-1" />
-                    <span>{event.location}</span>
+                  <div className="p-6">
+                    <div className="flex items-center mb-2">
+                      <Calendar className="h-5 w-5 text-purple-600 mr-2" />
+                      <span className="text-sm font-medium text-purple-600">
+                        {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{event.title}</h3>
+                    <p className="text-gray-600 mb-4">{event.shortDesc}</p>
+                    <div className="flex items-center text-sm text-gray-500 mb-4">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      <span>{event.location}</span>
+                    </div>
+                    <button
+                      className={`w-full mt-4 py-2 rounded-lg transition-colors ${isPastEvent ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700 text-white'}`}
+                      onClick={() => !isPastEvent && navigateToEventDetail(event.id)}
+                      disabled={isPastEvent}
+                    >
+                      {isPastEvent ? 'Completed' : 'View Details'}
+                    </button>
                   </div>
-                  <button
-                    className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition-colors"
-                    onClick={() => navigateToEventDetail(event.id)}
-                  >
-                    View Details
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Empty State */}
-          {filteredEvents.length === 0 && !loading && (
+          {sortedEvents.length === 0 && !loading && (
             <div className="text-center py-16">
               <Database className="h-16 w-16 mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-bold text-gray-700 mb-2">No events found</h3>

@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { BookOpen, Clock, Award, BarChart2, Calendar, Settings, LogOut, Bell, Search, Play, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { BookOpen, Clock, Award, BarChart2, Calendar, Settings, LogOut, Search } from 'lucide-react';
 import { SignedIn, useClerk, UserButton } from '@clerk/clerk-react';
 import { useCurrentUser } from '@/lib/currentUser';
 import { getUserRegistrations, UserRegistrations, type CourseRegistration, type EventRegistration } from '@/lib/beCalls/userRegistrations';
 import { Link } from 'react-router-dom';
+import PremiumCertificate from '@/components/PremiumCertificate';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 type ContinueLearningItem = (CourseRegistration & { _type: 'course' }) | (EventRegistration & { _type: 'event' });
 
@@ -59,6 +62,16 @@ const DashboardPage = () => {
   //   ...registrations.courses.map(course => ({ ...course, _type: 'course' as const })),
   // ];
 
+  const handleDownloadCertificate = async () => {
+    const certElem = document.getElementById('certificate-pdf-area');
+    if (!certElem) return;
+    const canvas = await html2canvas(certElem, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [canvas.width, canvas.height] });
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save('certificate.pdf');
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="bg-purple-900 text-white py-8">
@@ -97,30 +110,30 @@ const DashboardPage = () => {
                   <BarChart2 className="h-5 w-5" />
                   <span>Overview</span>
                 </button>
-                <button 
+                {/* <button 
                 disabled
                   onClick={() => setActiveTab('courses')}
                   className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'courses' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <BookOpen className="h-5 w-5" />
                   <span>My Courses</span>
-                </button>
-                <button 
+                </button> */}
+                {/* <button 
                 disabled
                   onClick={() => setActiveTab('calendar')}
                   className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'calendar' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <Calendar className="h-5 w-5" />
                   <span>Calendar</span>
-                </button>
-                <button 
+                </button> */}
+                {/* <button 
                 disabled
                   onClick={() => setActiveTab('achievements')}
                   className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'achievements' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <Award className="h-5 w-5" />
                   <span>Achievements</span>
-                </button>
+                </button> */}
                 <button 
                 disabled
                   onClick={() => setActiveTab('settings')}
@@ -128,6 +141,14 @@ const DashboardPage = () => {
                 >
                   <Settings className="h-5 w-5" />
                   <span>Settings</span>
+                </button>
+                <button
+                disabled
+                  onClick={() => setActiveTab('certificate')}
+                  className={`w-full flex cursor-not-allowed items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'certificate' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+                >
+                  <Award className="h-5 w-5" />
+                  <span>Certificate</span>
                 </button>
               </div>
               <div className="mt-8 pt-6 border-t border-gray-200">
@@ -157,6 +178,22 @@ const DashboardPage = () => {
               </div>
             </div>
 
+            {activeTab === 'certificate' && (
+              <>
+                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+                <div id="certificate-pdf-area">
+                  <PremiumCertificate user={user} />
+                </div>
+                <div className="flex justify-end mt-4">
+                  <button
+                    onClick={handleDownloadCertificate}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition-colors"
+                  >
+                    Download as PDF
+                  </button>
+                </div>
+              </>
+            )}
             {activeTab === 'overview' && (
               <>
                 {/* Progress Summary */}
@@ -193,7 +230,7 @@ const DashboardPage = () => {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-md p-6">
+                {/* <div className="bg-white rounded-xl shadow-md p-6">
                   <h2 className="text-xl font-bold mb-4">Share Your Feedback</h2>
                   <p className="text-gray-600 mb-6">
                     We'd love to hear your thoughts on the 'Explore Space: Participate in Asteroid Detection' webinar. Your feedback helps us improve future events.
@@ -210,7 +247,7 @@ const DashboardPage = () => {
                   >
                     Fill out the Feedback Form
                   </a>
-                </div>
+                </div> */}
 
                 {/* Continue Learning */}
                 <div className="bg-white rounded-xl shadow-md p-6">

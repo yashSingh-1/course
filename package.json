@@ -18,6 +18,8 @@
     "framer-motion": "^12.10.4",
     "front-matter": "^4.0.2",
     "gray-matter": "^4.0.3",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
     "lucide-react": "^0.488.0",
     "prisma": "^6.6.0",
     "react": "^18.3.1",
