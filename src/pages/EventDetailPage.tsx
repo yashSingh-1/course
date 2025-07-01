@@ -385,8 +385,8 @@ const EventDetailPage: React.FC = () => {
                   eventId={event.id}
                   onSuccess={(msg: string) => setRegisterSuccess(msg)}
                   onError={(msg: string) => setRegisterError(msg)}
-                loading={registerLoading}
-                setLoading={setRegisterLoading}
+                  loading={registerLoading}
+                  setLoading={setRegisterLoading}
                 />
               )
             )}

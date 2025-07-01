@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const INTEREST_REASONS = [
   { value: "ASTROPHYSICS", label: "Astrophysics" },
@@ -29,6 +29,23 @@ export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoad
     id: id
   });
   const [submitted, setSubmitted] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+
+  useEffect(() => {
+    if (submitted && countdown > 0) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [submitted, countdown]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -51,6 +68,8 @@ export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoad
       if (!res.ok) throw new Error(data.error || "Registration failed");
       setSubmitted(true);
       onSuccess("Registration successful! You'll be notified about the details of the event in your email.");
+      // Redirect immediately to WhatsApp
+      window.open('https://whatsapp.com/channel/0029Vb65EMi8F2pGJzfPpN3w', '_blank');
     } catch (err: any) {
       onError(err.message);
     } finally {
@@ -147,8 +166,21 @@ export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoad
             </svg>
           </div>
           <div className="text-2xl font-bold text-green-600 mb-2">Registration Successful!</div>
-          <div className="text-gray-700 text-center max-w-xs">
+          <div className="text-gray-700 text-center max-w-xs mb-6">
             You'll be notified about the details of the event in your email.
+          </div>
+          
+          {/* Countdown Timer */}
+          <div className="text-center">
+            <div className="text-lg font-semibold text-blue-600 mb-2">
+              Redirecting to WhatsApp Group in {countdown} seconds...
+            </div>
+            <div className="w-20 h-20 mx-auto mb-4 bg-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+              {countdown}
+            </div>
+            <div className="text-sm text-gray-600">
+              Follow the Propagation channel on WhatsApp
+            </div>
           </div>
         </div>
       )}
