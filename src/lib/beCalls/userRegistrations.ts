@@ -1,3 +1,7 @@
+import { useAuth } from '../auth';
+
+const API_BASE_URL = 'https://propagation-be.onrender.com/api';
+
 export interface CourseRegistration {
   _type?: 'course';
   id: string;
@@ -7,26 +11,54 @@ export interface CourseRegistration {
   progress: number;
   category: string;
   description?: string;
+  userId: string;
+  fullName: string;
+  email: string;
+  phoneNumber?: string;
+  completed: boolean;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  course: {
+    id: string;
+    title: string;
+    description: string;
+    thumbnail: string;
+    level: string;
+    duration: number;
+    price: number;
+  };
 }
 
 export interface EventRegistration {
   _type?: 'event';
   id: string;
-  title: string;
-  shortDesc: string;
-  thumbnail: string;
-  type: string;
-  startDate: string;
-  endDate: string;
+  eventId: string;
+  userId: string;
+  fullName: string;
+  email: string;
+  phoneNumber?: string;
+  age?: string;
+  occupation?: string;
+  organization?: string;
+  interestReason?: string;
+  otherReason?: string;
+  experience?: string;
+  expectations?: string;
+  questions?: string;
   status: string;
-  location: string;
-  organizer: string;
-  price: number | null;
-  capacity: number | null;
   createdAt: string;
   updatedAt: string;
-  registrationStatus: string;
-  registrationDate: string;
+  event: {
+    id: string;
+    title: string;
+    shortDesc: string;
+    thumbnail: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    status: string;
+  };
 }
 
 export interface UserRegistrations {
@@ -34,15 +66,28 @@ export interface UserRegistrations {
   events: EventRegistration[];
 }
 
-export const getUserRegistrations = async (userId: string): Promise<UserRegistrations> => {
+export const getUserRegistrations = async (userId: string): Promise<UserRegistrations | null> => {
   try {
-    const response = await fetch(`https://propagation-be.onrender.com/user/${userId}/registrations`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch user registrations');
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      throw new Error('No authentication token found');
     }
-    return await response.json();
+
+    const response = await fetch(`${API_BASE_URL}/user/registrations`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch registrations');
+    }
+
+    const data = await response.json();
+    return data.data;
   } catch (error) {
     console.error('Error fetching user registrations:', error);
-    return { courses: [], events: [] };
+    return null;
   }
 }; 

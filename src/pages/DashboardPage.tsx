@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BookOpen, Clock, Award, BarChart2, Calendar, Settings, LogOut, Search } from 'lucide-react';
-import { SignedIn, useClerk, UserButton } from '@clerk/clerk-react';
-import { useCurrentUser } from '@/lib/currentUser';
+import { useAuth } from '@/lib/auth';
 import { getUserRegistrations, UserRegistrations, type CourseRegistration, type EventRegistration } from '@/lib/beCalls/userRegistrations';
 import { Link } from 'react-router-dom';
 import PremiumCertificate from '@/components/PremiumCertificate';
@@ -11,19 +10,18 @@ import jsPDF from 'jspdf';
 type ContinueLearningItem = (CourseRegistration & { _type: 'course' }) | (EventRegistration & { _type: 'event' });
 
 const DashboardPage = () => {
-  const { signOut } = useClerk();
+  const { user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [registrations, setRegistrations] = useState<UserRegistrations>({
     courses: [],
     events: []
   });
   const [loading, setLoading] = useState(true);
-  const user = useCurrentUser();
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchRegistrations = async () => {
-      if (user.id) {
+      if (user?.id) {
         setLoading(true);
         try {
           const data = await getUserRegistrations(user.id);
@@ -42,7 +40,7 @@ const DashboardPage = () => {
     };
 
     fetchRegistrations();
-  }, [user.id]);
+  }, [user?.id]);
 
   // Combine courses and events into a single array with a type tag
   const continueLearningItems: ContinueLearningItem[] = [
@@ -57,11 +55,6 @@ const DashboardPage = () => {
     return text.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  // const calendarItems = [
-  //   ...registrations.events.map(event => ({ ...event, _type: 'event' as const })),
-  //   ...registrations.courses.map(course => ({ ...course, _type: 'course' as const })),
-  // ];
-
   const handleDownloadCertificate = async () => {
     const certElem = document.getElementById('certificate-pdf-area');
     if (!certElem) return;
@@ -71,6 +64,18 @@ const DashboardPage = () => {
     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
     pdf.save('certificate.pdf');
   };
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center text-gray-500">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -86,11 +91,8 @@ const DashboardPage = () => {
                  
             </div>
             <div className="mt-4 md:mt-0 flex items-center space-x-4">
-              <div className="flex items-center space-x-2 border-2 border-purple-500 rounded-full ">
-              <SignedIn>
-                  <UserButton />
-                 </SignedIn>
-
+              <div className="flex items-center space-x-2 border-2 border-purple-500 rounded-full px-4 py-2">
+                <span className="text-sm font-medium">{user.name}</span>
               </div>
             </div>
           </div>
@@ -102,7 +104,7 @@ const DashboardPage = () => {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-md p-6">
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <button 
                   onClick={() => setActiveTab('overview')}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'overview' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
@@ -110,30 +112,20 @@ const DashboardPage = () => {
                   <BarChart2 className="h-5 w-5" />
                   <span>Overview</span>
                 </button>
-                {/* <button 
-                disabled
-                  onClick={() => setActiveTab('courses')}
-                  className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'courses' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+                <button 
+                  onClick={() => setActiveTab('continue-learning')}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'continue-learning' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <BookOpen className="h-5 w-5" />
-                  <span>My Courses</span>
-                </button> */}
-                {/* <button 
-                disabled
+                  <span>Continue Learning</span>
+                </button>
+                <button 
                   onClick={() => setActiveTab('calendar')}
-                  className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'calendar' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'calendar' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <Calendar className="h-5 w-5" />
                   <span>Calendar</span>
-                </button> */}
-                {/* <button 
-                disabled
-                  onClick={() => setActiveTab('achievements')}
-                  className={`w-full cursor-not-allowed flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'achievements' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
-                >
-                  <Award className="h-5 w-5" />
-                  <span>Achievements</span>
-                </button> */}
+                </button>
                 <button 
                 disabled
                   onClick={() => setActiveTab('settings')}
@@ -152,9 +144,7 @@ const DashboardPage = () => {
                 </button>
               </div>
               <div className="mt-8 pt-6 border-t border-gray-200">
-                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left text-red-600 hover:bg-red-50" onClick={ async () => {
-                  await signOut();
-                }}>
+                <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left text-red-600 hover:bg-red-50" onClick={handleSignOut}>
                   <LogOut className="h-5 w-5" />
                   <span>Logout</span>
                 </button>
@@ -194,257 +184,88 @@ const DashboardPage = () => {
                 </div>
               </>
             )}
+
             {activeTab === 'overview' && (
-              <>
-                {/* Progress Summary */}
+              <div className="space-y-6">
+                {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-white rounded-xl shadow-md p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold text-gray-500">Courses Enrolled</h3>
-                      <BookOpen className="h-6 w-6 text-purple-600" />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Enrolled Courses</p>
+                        <p className="text-2xl font-bold text-gray-900">{registrations.courses.length}</p>
+                      </div>
+                      <div className="p-3 bg-blue-100 rounded-full">
+                        <BookOpen className="h-6 w-6 text-blue-600" />
+                      </div>
                     </div>
-                    {loading ? (
-                      <div className="animate-pulse h-8 bg-gray-200 rounded"></div>
-                    ) : (
-                      <>
-                        <p className="text-3xl font-bold">{registrations?.courses?.length}</p>
-                        <p className="text-sm text-gray-500 mt-2">Enrolled Courses</p>
-                      </>
-                    )}
                   </div>
+                  
                   <div className="bg-white rounded-xl shadow-md p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold text-gray-500">Hours Studied</h3>
-                      <Clock className="h-6 w-6 text-blue-600" />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Registered Events</p>
+                        <p className="text-2xl font-bold text-gray-900">{registrations.events.length}</p>
+                      </div>
+                      <div className="p-3 bg-green-100 rounded-full">
+                        <Calendar className="h-6 w-6 text-green-600" />
+                      </div>
                     </div>
-                    <p className="text-3xl font-bold">0</p>
-                    <p className="text-sm text-gray-500 mt-2">Last 30 days</p>
                   </div>
+                  
                   <div className="bg-white rounded-xl shadow-md p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold text-gray-500">Achievements</h3>
-                      <Award className="h-6 w-6 text-yellow-600" />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">Learning Hours</p>
+                        <p className="text-2xl font-bold text-gray-900">24</p>
+                      </div>
+                      <div className="p-3 bg-purple-100 rounded-full">
+                        <Clock className="h-6 w-6 text-purple-600" />
+                      </div>
                     </div>
-                    <p className="text-3xl font-bold">0</p>
-                    <p className="text-sm text-gray-500 mt-2">0 earned this month</p>
                   </div>
                 </div>
 
-                {/* <div className="bg-white rounded-xl shadow-md p-6">
-                  <h2 className="text-xl font-bold mb-4">Share Your Feedback</h2>
-                  <p className="text-gray-600 mb-6">
-                    We'd love to hear your thoughts on the 'Explore Space: Participate in Asteroid Detection' webinar. Your feedback helps us improve future events.
-                    <br />
-                    <strong className="text-gray-800">You will receive your participation certificate within 2 days of submission.</strong>
-                    <br />
-                    Also, please join our WhatsApp group for updates on future events (link at the end of the form).
-                  </p>
-                  <a
-                    href="https://forms.gle/7Hv9sfsphwkBw43v7"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
-                  >
-                    Fill out the Feedback Form
-                  </a>
-                </div> */}
-
-                {/* Continue Learning */}
+                {/* Recent Activity */}
                 <div className="bg-white rounded-xl shadow-md p-6">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                    <h2 className="text-xl font-bold">Continue Learning</h2>
-                    <div className="flex space-x-4 mt-2 md:mt-0">
-                      <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
-                        {registrations.courses.length} Course{registrations.courses.length !== 1 ? 's' : ''} Enrolled
-                      </span>
-                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
-                        {registrations.events.length} Event{registrations.events.length !== 1 ? 's' : ''} Registered
-                      </span>
-                    </div>
-                  </div>
-                  {loading ? (
-                    <div className="space-y-6">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="animate-pulse flex space-x-4">
-                          <div className="w-48 h-32 bg-gray-200 rounded"></div>
-                          <div className="flex-1 space-y-4">
-                            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                            <div className="h-4 bg-gray-200 rounded"></div>
-                            <div className="h-2 bg-gray-200 rounded w-5/6"></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : filteredContinueLearningItems.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {filteredContinueLearningItems.map((item, index) => (
-                        <Link to={`/events/${item.id}`} key={index}>
-                        <div
-                          key={index}
-                          className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
-                        >
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+                  {continueLearningItems.length > 0 ? (
+                    <div className="space-y-4">
+                      {continueLearningItems.slice(0, 3).map(item => (
+                        <div key={item.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                           <img
                             src={item._type === 'event' ? item.thumbnail : item.courseImage}
                             alt={item._type === 'event' ? item.title : item.courseName}
-                            className="h-40 w-full object-cover"
+                            className="h-12 w-12 object-cover rounded-lg"
                           />
-                          <div className="p-4 flex-1 flex flex-col">
-                            <span className={`inline-block px-2 py-1 text-xs font-bold rounded mb-2 w-fit
-                              ${item._type === 'event' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
-                              {item._type === 'event' ? 'Event' : 'Course'}
-                            </span>
-                            <h3 className="text-lg font-bold mb-2">{item._type === 'event' ? item.title : item.courseName}</h3>
-                            <p className="text-gray-600 text-sm mb-4 flex-1">{item._type === 'event' ? item.shortDesc : item.category}</p>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900">
+                              {item._type === 'event' ? item.title : item.courseName}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                              {item._type === 'event' ? item.shortDesc : item.category}
+                            </p>
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {item._type === 'event' ? 'Event' : 'Course'}
                           </div>
                         </div>
-                        </Link>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      No events or courses match your search.
-                    </div>
+                    <p className="text-gray-500 text-center py-8">No recent activity</p>
                   )}
                 </div>
-
-                {/* Feedback Form Section */}
-                
-
-                {/* Upcoming Events */}
-                {/* <div className="bg-white rounded-xl shadow-md p-6">
-                  <h2 className="text-xl font-bold mb-6">Upcoming Events</h2>
-                  {loading ? (
-                    <div className="space-y-4">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="animate-pulse flex space-x-4">
-                          <div className="h-12 w-12 bg-gray-200 rounded"></div>
-                          <div className="flex-1 space-y-2">
-                            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (() => {
-                    const upcomingEvents = registrations.events.filter(
-                      event => new Date(event.endDate) > new Date()
-                    );
-                    return upcomingEvents.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {upcomingEvents.map((event, index) => (
-                          <div
-                            key={index}
-                            className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
-                          >
-                            <img
-                              src={event.thumbnail}
-                              alt={event.title}
-                              className="h-40 w-full object-cover"
-                            />
-                            <div className="p-4 flex-1 flex flex-col">
-                              <span className="inline-block px-2 py-1 text-xs font-bold rounded mb-2 w-fit bg-blue-100 text-blue-700">
-                                Event
-                              </span>
-                              <h3 className="text-lg font-bold mb-2">{event.title}</h3>
-                              <p className="text-gray-600 text-sm mb-2">{event.shortDesc}</p>
-                              <div className="text-xs text-gray-500 mt-auto">
-                                <span>
-                                  {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
-                                </span>
-                                <span className="ml-2">{event.location}</span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-8 text-gray-500">
-                        No upcoming events
-                      </div>
-                    );
-                  })()}
-                </div> */}
-              </>
-            )}
-
-            {activeTab === 'courses' && (
-              <div className="bg-white rounded-xl shadow-md p-6">
-                <h2 className="text-xl font-bold mb-6">My Courses</h2>
-                {loading ? (
-                  <div className="space-y-6">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="animate-pulse flex space-x-4">
-                        <div className="w-48 h-32 bg-gray-200 rounded"></div>
-                        <div className="flex-1 space-y-4">
-                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                          <div className="h-4 bg-gray-200 rounded"></div>
-                          <div className="h-2 bg-gray-200 rounded w-5/6"></div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : registrations?.courses?.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {registrations.courses.map((course, index) => (
-                      <div
-                        key={index}
-                        className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
-                      >
-                        <img
-                          src={course.courseImage}
-                          alt={course.courseName}
-                          className="h-40 w-full object-cover"
-                        />
-                        <div className="p-4 flex-1 flex flex-col">
-                          <span className="inline-block px-2 py-1 text-xs font-bold rounded mb-2 w-fit bg-green-100 text-green-700">
-                            Course
-                          </span>
-                          <h3 className="text-lg font-bold mb-2">{course.courseName}</h3>
-                          <p className="text-gray-600 text-sm mb-4 flex-1">{course.description}</p>
-                          {/* Optionally, add progress bar or continue button here */}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No courses enrolled yet
-                  </div>
-                )}
               </div>
             )}
 
-            {activeTab === 'calendar' && (
-              <div className="bg-white rounded-xl shadow-md p-6">
-                <h2 className="text-xl font-bold mb-6">Upcoming Events & Courses</h2>
-                {loading ? (
-                  <div className="space-y-4">
-                    {registrations.events.map((stuff , index) => (
-                      <div key={index} className="animate-pulse flex space-x-4">
-                        <div className="h-12 w-12 bg-gray-200 rounded">{stuff.title}</div>
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-gray-200 rounded w-3/4">{stuff.shortDesc}</div>
-                          <div className="h-4 bg-gray-200 rounded w-1/2">{stuff.location}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (() => {
-                  // Filter upcoming events
-                  const upcomingEvents = registrations.events
-                    .filter(event => new Date(event.endDate) > new Date())
-                    .map(event => ({ ...event, _type: 'event' as const }));
-
-                  // All courses (or filter by progress if you want)
-                  const enrolledCourses = registrations.courses
-                    .map(course => ({ ...course, _type: 'course' as const }));
-
-                  // Combine for display
-                  const calendarItems = [...upcomingEvents, ...enrolledCourses];
-
-                  return calendarItems.length > 0 ? (
+            {activeTab === 'continue-learning' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-xl shadow-md p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Continue Learning</h3>
+                  {filteredContinueLearningItems.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {calendarItems.map(item => (
+                      {filteredContinueLearningItems.map(item => (
                         <div
                           key={item.id}
                           className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
@@ -455,49 +276,117 @@ const DashboardPage = () => {
                             className="h-40 w-full object-cover"
                           />
                           <div className="p-4 flex-1 flex flex-col">
-                            <span className={`inline-block px-2 py-1 text-xs font-bold rounded mb-2 w-fit
-                              ${item._type === 'event' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
-                              {item._type === 'event' ? 'Event' : 'Course'}
-                            </span>
-                            <h3 className="text-lg font-bold mb-2">{item._type === 'event' ? item.title : item.courseName}</h3>
-                            <p className="text-gray-600 text-sm mb-2">
+                            <h4 className="font-semibold text-gray-900 mb-2">
+                              {item._type === 'event' ? item.title : item.courseName}
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4 flex-1">
                               {item._type === 'event' ? item.shortDesc : item.category}
                             </p>
-                            {item._type === 'event' ? (
-                              <div className="text-xs text-gray-500 mt-auto">
-                                <span>
-                                  {new Date(item.startDate).toLocaleDateString()} - {new Date(item.endDate).toLocaleDateString()}
-                                </span>
-                                <span className="ml-2">{item.location}</span>
-                              </div>
-                            ) : null}
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-500">
+                                {item._type === 'event' ? 'Event' : 'Course'}
+                              </span>
+                              <Link
+                                to={item._type === 'event' ? `/events/${item.id}` : `/courses/${item.id}`}
+                                className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+                              >
+                                Continue →
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      No upcoming events or courses
+                    <div className="text-center py-12">
+                      <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No courses or events yet</h3>
+                      <p className="text-gray-500 mb-6">Start your learning journey by enrolling in courses or registering for events.</p>
+                      <div className="space-x-4">
+                        <Link
+                          to="/courses"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+                        >
+                          Browse Courses
+                        </Link>
+                        <Link
+                          to="/events"
+                          className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        >
+                          View Events
+                        </Link>
+                      </div>
                     </div>
-                  );
-                })()}
-              </div>
-            )}
-
-            {activeTab === 'achievements' && (
-              <div className="bg-white rounded-xl shadow-md p-6">
-                <h2 className="text-xl font-bold mb-6">Your Achievements</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Achievements content will be populated here */}
+                  )}
                 </div>
               </div>
             )}
 
-            {activeTab === 'settings' && (
-              <div className="bg-white rounded-xl shadow-md p-6 flex items-center justify-center min-h-[400px]">
-                <div className="text-center">
-                  <h2 className="text-xl font-bold mb-2">Coming Soon</h2>
-                  <p className="text-gray-600">This section is under development. Check back later!</p>
+            {activeTab === 'calendar' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-xl shadow-md p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Events & Courses</h3>
+                  {(() => {
+                    // Filter upcoming events
+                    const upcomingEvents = registrations.events
+                      .filter(event => new Date(event.endDate) > new Date())
+                      .map(event => ({ ...event, _type: 'event' as const }));
+
+                    // All courses (or filter by progress if you want)
+                    const enrolledCourses = registrations.courses
+                      .map(course => ({ ...course, _type: 'course' as const }));
+
+                    // Combine for display
+                    const calendarItems = [...upcomingEvents, ...enrolledCourses];
+
+                    return calendarItems.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {calendarItems.map(item => (
+                          <div
+                            key={item.id}
+                            className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
+                          >
+                            <img
+                              src={item._type === 'event' ? item.thumbnail : item.courseImage}
+                              alt={item._type === 'event' ? item.title : item.courseName}
+                              className="h-40 w-full object-cover"
+                            />
+                            <div className="p-4 flex-1 flex flex-col">
+                              <h4 className="font-semibold text-gray-900 mb-2">
+                                {item._type === 'event' ? item.title : item.courseName}
+                              </h4>
+                              <p className="text-sm text-gray-600 mb-4 flex-1">
+                                {item._type === 'event' ? item.shortDesc : item.category}
+                              </p>
+                              <div className="flex justify-between items-center">
+                                <span className="text-xs text-gray-500">
+                                  {item._type === 'event' ? 'Event' : 'Course'}
+                                </span>
+                                <Link
+                                  to={item._type === 'event' ? `/events/${item.id}` : `/courses/${item.id}`}
+                                  className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+                                >
+                                  View Details →
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No upcoming events</h3>
+                        <p className="text-gray-500 mb-6">Register for events or enroll in courses to see them here.</p>
+                        <Link
+                          to="/events"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+                        >
+                          Browse Events
+                        </Link>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             )}

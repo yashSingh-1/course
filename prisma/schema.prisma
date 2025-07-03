@@ -39,6 +39,20 @@ enum CourseStatus {
   ARCHIVED
 }
 
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  eventRegistrations EventRegistration[]
+  courseRegistrations CourseRegistration[]
+}
+
 model Event {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
   title       String
@@ -55,8 +69,9 @@ model Event {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  // Relation to EventDetail
+  // Relations
   details     EventDetail?
+  registrations EventRegistration[]
 
   @@index([type])
   @@index([status])
@@ -147,6 +162,7 @@ model Course {
   // Relations
   syllabus        Module[]
   faqs            CourseFAQ[]
+  registrations   CourseRegistration[]
   
   @@index([level])
   @@index([status])
@@ -209,4 +225,66 @@ model CourseFAQ {
   updatedAt   DateTime @updatedAt
 
   @@index([courseId, order])
+}
+
+model EventRegistration {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  eventId     String   @db.ObjectId
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Registration details
+  fullName    String
+  email       String
+  phoneNumber String?
+  age         String?
+  occupation  String?
+  organization String?
+  interestReason String?
+  otherReason String?
+  experience  String?
+  expectations String?
+  questions   String?
+  
+  // Registration status
+  status      String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+  @@index([status])
+}
+
+model CourseRegistration {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  courseId    String   @db.ObjectId
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Registration details
+  fullName    String
+  email       String
+  phoneNumber String?
+  
+  // Progress tracking
+  progress    Float    @default(0) // 0-100 percentage
+  completed   Boolean  @default(false)
+  
+  // Registration status
+  status      String   @default("ENROLLED") // ENROLLED, COMPLETED, DROPPED
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([courseId, userId])
+  @@index([courseId])
+  @@index([userId])
+  @@index([status])
 }

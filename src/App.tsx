@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './lib/auth';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -16,6 +16,27 @@ import Admin from './pages/Admin';
 import AllBlogs from './pages/AllBlogs';
 import BlogPost from './pages/BlogPost';
 import Resources from './pages/Resources';
+import { SignInForm } from './components/SignInForm';
+import { SignUpForm } from './components/SignUpForm';
+
+// Protected Route Component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, isLoaded } = useAuth();
+  
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+  
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+  
+  return <>{children}</>;
+};
 
 function App() {
   return (
@@ -30,17 +51,14 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/blog" element={<AllBlogs />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/signin" element={<SignInForm />} />
+            <Route path="/signup" element={<SignUpForm />} />
             <Route
               path="/dashboard"
               element={
-                <>
-                  <SignedIn>
-                    <DashboardPage />
-                  </SignedIn>
-                  <SignedOut>
-                    <RedirectToSignIn signInForceRedirectUrl={`https://propogation.co.in${window.location.pathname}${window.location.search}`} />
-                  </SignedOut>
-                </>
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
               }
             />
             <Route path="/about" element={<AboutPage />} />

@@ -11,7 +11,7 @@ const INTEREST_REASONS = [
   { value: "OTHER", label: "Other" },
 ];
 
-const RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY;
+const API_BASE_URL = 'https://propagation-be.onrender.com/api';
 
 export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoading, email, id }: any) {
   const [form, setForm] = useState({
@@ -56,16 +56,24 @@ export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoad
     onError(null);
     setLoading(true);
     try {
-      const res = await fetch(`https://propagation-be.onrender.com/events/${eventId}/register`, {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const res = await fetch(`${API_BASE_URL}/events/${eventId}/register`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({
           ...form,
           age: form.age ? Number(form.age) : undefined,
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Registration failed");
+      if (!res.ok) throw new Error(data.message || "Registration failed");
       setSubmitted(true);
       onSuccess("Registration successful! You'll be notified about the details of the event in your email.");
       // Redirect immediately to WhatsApp

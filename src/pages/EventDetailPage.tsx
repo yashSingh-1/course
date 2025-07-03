@@ -3,8 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, HelpCircle, CheckCircle, ChevronUp } from 'lucide-react';
 import { fetchEventById } from '../backendCalls/fetchEvents';
 import { RegistrationForm } from '../components/RegistrationForm';
-import { useCurrentUser } from "../lib/currentUser";
-import { useClerk } from "@clerk/clerk-react";
+import { useAuth } from "../lib/auth";
 
 interface EventResource {
   title: string;
@@ -83,8 +82,7 @@ const EventDetailPage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   
-  const currentUser = useCurrentUser();
-  const { openSignIn } = useClerk();
+  const { user: currentUser, isLoaded } = useAuth();
 
   useEffect(() => {
     if (eventId) {
@@ -99,14 +97,13 @@ const EventDetailPage: React.FC = () => {
   }, [eventId]);
 
   useEffect(() => {
-    if (!currentUser) { 
-      navigate("/");
+    if (isLoaded && currentUser) {
+      setUser({
+        id: currentUser.id,
+        email: currentUser.email,
+      });
     }
-    setUser({
-      id: currentUser.id,
-      email: currentUser.email,
-    });
-  }, [currentUser.isLoaded]);
+  }, [currentUser, isLoaded]);
 
   const toggleFaq = (faqIdx: number) => {
     setExpandedFaqs((prev) =>
@@ -118,9 +115,8 @@ const EventDetailPage: React.FC = () => {
     if (currentUser?.id) {
       setShowRegisterModal(true);
     } else {
-      openSignIn({
-        redirectUrl: `https://propogation.co.in${window.location.pathname}${window.location.search}`,
-      });
+      const currentPath = window.location.pathname;
+      navigate(`/signin?redirect=${encodeURIComponent(currentPath)}`);
     }
   };
 
@@ -137,7 +133,7 @@ const EventDetailPage: React.FC = () => {
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-700">Event not found</h2>
-          <Link to="/events" className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+          <Link to="/events" className="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg">
             Back to Events
           </Link>
         </div>
