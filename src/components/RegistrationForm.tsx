@@ -11,7 +11,7 @@ const INTEREST_REASONS = [
   { value: "OTHER", label: "Other" },
 ];
 
-const API_BASE_URL = 'https://propagation-be.onrender.com/api';
+const API_BASE_URL = 'https://propagation-be.onrender.com';
 
 export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoading, email, id }: any) {
   const [form, setForm] = useState({
