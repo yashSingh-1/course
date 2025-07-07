@@ -42,7 +42,6 @@ const DashboardPage = () => {
     fetchRegistrations();
   }, [user?.id]);
 
-  // Combine courses and events into a single array with a type tag
   const continueLearningItems: ContinueLearningItem[] = [
     ...registrations.courses.map(course => ({ ...course, _type: 'course' as const })),
     ...registrations.events.map(event => ({ ...event, _type: 'event' as const })),
@@ -50,7 +49,7 @@ const DashboardPage = () => {
 
   const filteredContinueLearningItems = continueLearningItems.filter(item => {
     const text = item._type === 'event'
-      ? `${item.title} ${item.shortDesc} ${item.location}`
+      ? `${item.event.title} ${item.event.shortDesc} ${item.event.location}`
       : `${item.courseName} ${item.category}`;
     return text.toLowerCase().includes(searchQuery.toLowerCase());
   });
@@ -101,7 +100,6 @@ const DashboardPage = () => {
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-md p-6">
               <div className="space-y-2">
@@ -152,9 +150,7 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
-            {/* Search Bar */}
             <div className="bg-white rounded-xl shadow-md p-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -187,7 +183,6 @@ const DashboardPage = () => {
 
             {activeTab === 'overview' && (
               <div className="space-y-6">
-                {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-white rounded-xl shadow-md p-6">
                     <div className="flex items-center justify-between">
@@ -226,7 +221,6 @@ const DashboardPage = () => {
                   </div>
                 </div>
 
-                {/* Recent Activity */}
                 <div className="bg-white rounded-xl shadow-md p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
                   {continueLearningItems.length > 0 ? (
@@ -234,16 +228,16 @@ const DashboardPage = () => {
                       {continueLearningItems.slice(0, 3).map(item => (
                         <div key={item.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                           <img
-                            src={item._type === 'event' ? item.thumbnail : item.courseImage}
-                            alt={item._type === 'event' ? item.title : item.courseName}
+                            src={item._type === 'event' ? item.event.thumbnail : item.courseImage}
+                            alt={item._type === 'event' ? item.event.title : item.courseName}
                             className="h-12 w-12 object-cover rounded-lg"
                           />
                           <div className="flex-1">
                             <h4 className="font-medium text-gray-900">
-                              {item._type === 'event' ? item.title : item.courseName}
+                              {item._type === 'event' ? item.event.title : item.courseName}
                             </h4>
                             <p className="text-sm text-gray-600">
-                              {item._type === 'event' ? item.shortDesc : item.category}
+                              {item._type === 'event' ? item.event.shortDesc : item.category}
                             </p>
                           </div>
                           <div className="text-sm text-gray-500">
@@ -271,23 +265,23 @@ const DashboardPage = () => {
                           className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
                         >
                           <img
-                            src={item._type === 'event' ? item.thumbnail : item.courseImage}
-                            alt={item._type === 'event' ? item.title : item.courseName}
+                            src={item._type === 'event' ? item.event.thumbnail : item.courseImage}
+                            alt={item._type === 'event' ? item.event.title : item.courseName}
                             className="h-40 w-full object-cover"
                           />
                           <div className="p-4 flex-1 flex flex-col">
                             <h4 className="font-semibold text-gray-900 mb-2">
-                              {item._type === 'event' ? item.title : item.courseName}
+                              {item._type === 'event' ? item.event.title : item.courseName}
                             </h4>
                             <p className="text-sm text-gray-600 mb-4 flex-1">
-                              {item._type === 'event' ? item.shortDesc : item.category}
+                              {item._type === 'event' ? item.event.shortDesc : item.category}
                             </p>
                             <div className="flex justify-between items-center">
                               <span className="text-xs text-gray-500">
                                 {item._type === 'event' ? 'Event' : 'Course'}
                               </span>
                               <Link
-                                to={item._type === 'event' ? `/events/${item.id}` : `/courses/${item.id}`}
+                                to={item._type === 'event' ? `/events/${item.event.id}` : `/courses/${item.id}`}
                                 className="text-purple-600 hover:text-purple-700 text-sm font-medium"
                               >
                                 Continue →
@@ -327,16 +321,13 @@ const DashboardPage = () => {
                 <div className="bg-white rounded-xl shadow-md p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Events & Courses</h3>
                   {(() => {
-                    // Filter upcoming events
                     const upcomingEvents = registrations.events
-                      .filter(event => new Date(event.endDate) > new Date())
+                      .filter(event => new Date(event.event.endDate) > new Date())
                       .map(event => ({ ...event, _type: 'event' as const }));
 
-                    // All courses (or filter by progress if you want)
                     const enrolledCourses = registrations.courses
                       .map(course => ({ ...course, _type: 'course' as const }));
 
-                    // Combine for display
                     const calendarItems = [...upcomingEvents, ...enrolledCourses];
 
                     return calendarItems.length > 0 ? (
@@ -347,23 +338,23 @@ const DashboardPage = () => {
                             className="bg-gray-50 rounded-xl shadow hover:shadow-lg transition-shadow flex flex-col overflow-hidden"
                           >
                             <img
-                              src={item._type === 'event' ? item.thumbnail : item.courseImage}
-                              alt={item._type === 'event' ? item.title : item.courseName}
+                              src={item._type === 'event' ? item.event.thumbnail : item.courseImage}
+                              alt={item._type === 'event' ? item.event.title : item.courseName}
                               className="h-40 w-full object-cover"
                             />
                             <div className="p-4 flex-1 flex flex-col">
                               <h4 className="font-semibold text-gray-900 mb-2">
-                                {item._type === 'event' ? item.title : item.courseName}
+                                {item._type === 'event' ? item.event.title : item.courseName}
                               </h4>
                               <p className="text-sm text-gray-600 mb-4 flex-1">
-                                {item._type === 'event' ? item.shortDesc : item.category}
+                                {item._type === 'event' ? item.event.shortDesc : item.category}
                               </p>
                               <div className="flex justify-between items-center">
                                 <span className="text-xs text-gray-500">
                                   {item._type === 'event' ? 'Event' : 'Course'}
                                 </span>
                                 <Link
-                                  to={item._type === 'event' ? `/events/${item.id}` : `/courses/${item.id}`}
+                                  to={item._type === 'event' ? `/events/${item.event.id}` : `/courses/${item.id}`}
                                   className="text-purple-600 hover:text-purple-700 text-sm font-medium"
                                 >
                                   View Details →
