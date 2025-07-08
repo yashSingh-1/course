@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import PremiumCertificate from '@/components/PremiumCertificate';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 type ContinueLearningItem = (CourseRegistration & { _type: 'course' }) | (EventRegistration & { _type: 'event' });
 
@@ -55,13 +56,47 @@ const DashboardPage = () => {
   });
 
   const handleDownloadCertificate = async () => {
-    const certElem = document.getElementById('certificate-pdf-area');
+    const certElem = document.getElementById('certificate-content');
     if (!certElem) return;
     const canvas = await html2canvas(certElem, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [canvas.width, canvas.height] });
     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
     pdf.save('certificate.pdf');
+  };
+
+  const generatePersonalizedPDF = async (user: { name: string; email: string }) => {
+    // Fetch the template PDF
+    const templateBytes = await fetch('/certificate/template.pdf').then(res => res.arrayBuffer());
+    const pdfDoc = await PDFDocument.load(templateBytes);
+    const page = pdfDoc.getPages()[0];
+
+    // Load a standard font
+    const font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+
+    // Draw the name centered over the wiggling pen structure
+    const name = user.name;
+    const fontSize = 36;
+    const textWidth = font.widthOfTextAtSize(name, fontSize);
+    const x = 421.1 - textWidth / 2;
+    const y = 380;
+    page.drawText(name, {
+      x,
+      y,
+      size: fontSize,
+      font,
+      color: rgb(0.1, 0.2, 0.5),
+    });
+
+    // Save and trigger download
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'personalized-certificate.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleSignOut = async () => {
@@ -133,9 +168,8 @@ const DashboardPage = () => {
                   <span>Settings</span>
                 </button>
                 <button
-                disabled
                   onClick={() => setActiveTab('certificate')}
-                  className={`w-full flex cursor-not-allowed items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'certificate' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left ${activeTab === 'certificate' ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
                 >
                   <Award className="h-5 w-5" />
                   <span>Certificate</span>
@@ -166,17 +200,27 @@ const DashboardPage = () => {
 
             {activeTab === 'certificate' && (
               <>
-                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
-                <div id="certificate-pdf-area">
-                  <PremiumCertificate user={user} />
-                </div>
-                <div className="flex justify-end mt-4">
-                  <button
-                    onClick={handleDownloadCertificate}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition-colors"
-                  >
-                    Download as PDF
-                  </button>
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 rounded-2xl shadow-lg px-8 py-10 max-w-xl w-full flex flex-col items-center">
+                    <div className="flex items-center mb-3">
+                      <Award className="w-8 h-8 text-purple-600 mr-2" />
+                      <span className="text-3xl font-extrabold bg-gradient-to-r from-purple-700 to-blue-600 bg-clip-text text-transparent" style={{ letterSpacing: '0.01em' }}>
+                        {user.name}
+                      </span>
+                    </div>
+                    <div className="text-lg text-gray-700 font-semibold mb-2 text-center">
+                      Certificate for participation in <span className="text-purple-700 font-bold">Workshop of Citizen Science Projects</span>
+                    </div>
+                    <div className="text-sm text-gray-500 mb-6 text-center">
+                      Download your official certificate recognizing your valuable participation and contribution.
+                    </div>
+                    <button
+                      onClick={() => generatePersonalizedPDF(user)}
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors text-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    >
+                      <span className="inline-flex items-center"><Award className="w-5 h-5 mr-2" /> Download your certificate</span>
+                    </button>
+                  </div>
                 </div>
               </>
             )}
