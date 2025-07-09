@@ -10,6 +10,53 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 type ContinueLearningItem = (CourseRegistration & { _type: 'course' }) | (EventRegistration & { _type: 'event' });
 
+const ALLOWED_EMAILS = [
+  "adithyas27072001@gmail.com",
+  "astronmer07@gmail.com",
+  "Amv.shiats@gmail.com",
+  "mamidalarekha994@gmail.com",
+  "aasha2004asha@gmail.com",
+  "adhithyasumesh2003@gmail.com",
+  "bhattacharyapiyas0018@gmail.com",
+  "dharshikclt@gmail.com",
+  "goel.tejas46@gmail.com",
+  "dipak15pal@gmail.com",
+  "prachiguptaa18@gmail.com",
+  "raidamini107@gmail.com",
+  "yogsingh996@gmail.com",
+  "komalmehta133@gmail.com",
+  "ayaansinghal2805@gmail.com",
+  "scratch2805@gmail.com",
+  "miradilraja@gmail.com",
+  "priyashidutta10@gmail.com",
+  "reshmacs.rcs@gmail.com",
+  "jasnaa2002@gmail.com",
+  "sd4752368@gmail.com",
+  "sirius06200306@gmail.com",
+  "arindamisro1@gmail.com",
+  "paviniaf@gmail.com",
+  "ppsouvikpg762@gmail.com",
+  "shirkea445@gmail.com",
+  "rizanar23@gmail.com",
+  "indhumathi7471@gmail.com",
+  "tusarnaik2024@gmail.com",
+  "yogeshmalviya369@gmail.com",
+  "Sumukhkumar8@gmail.com",
+  "talib.mirza.mtb@gmail.com",
+  "shivamsingh28699@gmail.com",
+  "shabanajara18@gmail.com",
+  "gunjanverma1508@gmail.com",
+  "www.aryan9545@gmail.com",
+  "deeya.pokhriyal@gmail.com",
+  "lifehaschallengez@gmail.com",
+  "aerox.org@gmail.com",
+  "jainastrobee@gmail.com",
+  "tsk2317563@yahoo.com",
+  "mohdaltaf.aftab786@gmail.com",
+  "simran999598@gmail.com",
+  "ghoshurbi238@gmail.com",
+];
+
 const DashboardPage = () => {
   const { user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
@@ -214,12 +261,24 @@ const DashboardPage = () => {
                     <div className="text-sm text-gray-500 mb-6 text-center">
                       Download your official certificate recognizing your valuable participation and contribution.
                     </div>
-                    <button
-                      onClick={() => generatePersonalizedPDF(user)}
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors text-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-                    >
-                      <span className="inline-flex items-center"><Award className="w-5 h-5 mr-2" /> Download your certificate</span>
-                    </button>
+                    {ALLOWED_EMAILS.map(e => e.toLowerCase()).includes(user.email.toLowerCase()) ? (
+                      <button
+                        onClick={() => generatePersonalizedPDF(user)}
+                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors text-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      >
+                        <span className="inline-flex items-center"><Award className="w-5 h-5 mr-2" /> Download your certificate</span>
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        className="bg-gray-300 text-gray-500 font-bold py-3 px-8 rounded-lg shadow-md text-lg cursor-not-allowed opacity-60"
+                      >
+                        <span className="inline-flex items-center"><Award className="w-5 h-5 mr-2" /> You are not eligible to download the certificate</span>
+                      </button>
+                    )}
+                    <div className="mt-8 text-xs text-gray-500 text-center">
+                      If your name is not right, dispute it and please email us at <a href="mailto:propagation.connect@gmail.com" className="underline text-purple-700">propagation.connect@gmail.com</a>.
+                    </div>
                   </div>
                 </div>
               </>
