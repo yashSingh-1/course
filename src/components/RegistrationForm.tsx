@@ -13,7 +13,7 @@ const INTEREST_REASONS = [
 
 const API_BASE_URL = 'https://propagation-be.onrender.com';
 
-export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoading, email, id }: any) {
+export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoading, email, id, workshopName }: any) {
   const [form, setForm] = useState({
     fullName: "",
     email: email,
@@ -76,6 +76,17 @@ export function RegistrationForm({ eventId, onSuccess, onError, loading, setLoad
       if (!res.ok) throw new Error(data.message || "Registration failed");
       setSubmitted(true);
       onSuccess("Registration successful! You'll be notified about the details of the event in your email.");
+      // Add email to workshop registration
+      if (workshopName && form.email) {
+        fetch(`${API_BASE_URL}/workshop-registrations/${encodeURIComponent(workshopName)}/add-emails`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ emails: [form.email] })
+        }).catch((err) => {
+          // Optionally log error, but do not block user
+          console.error('Failed to add email to workshop registration:', err);
+        });
+      }
       // Redirect immediately to WhatsApp
       window.open('https://whatsapp.com/channel/0029Vb65EMi8F2pGJzfPpN3w', '_blank');
     } catch (err: any) {
