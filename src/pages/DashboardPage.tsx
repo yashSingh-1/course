@@ -13,7 +13,7 @@ type ContinueLearningItem = (CourseRegistration & { _type: 'course' }) | (EventR
 const ALLOWED_EMAILS = [
   "adithyas27072001@gmail.com",
   "astronmer07@gmail.com",
-  "Amv.shiats@gmail.com",
+  "Am.shiats@gmail.com",
   "mamidalarekha994@gmail.com",
   "aasha2004asha@gmail.com",
   "adhithyasumesh2003@gmail.com",
@@ -262,21 +262,12 @@ const DashboardPage = () => {
                     <div className="text-sm text-gray-500 mb-6 text-center">
                       Download your official certificate recognizing your valuable participation and contribution.
                     </div>
-                    {ALLOWED_EMAILS.map(e => e.toLowerCase()).includes(user.email.toLowerCase()) ? (
-                      <button
-                        onClick={() => generatePersonalizedPDF(user)}
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors text-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-                      >
-                        <span className="inline-flex items-center"><Award className="w-5 h-5 mr-2" /> Download your certificate</span>
-                      </button>
-                    ) : (
-                      <button
-                        disabled
-                        className="bg-gray-300 text-gray-500 font-bold py-3 px-8 rounded-lg shadow-md text-lg cursor-not-allowed opacity-60"
-                      >
-                        <span className="inline-flex items-center"><Award className="w-5 h-5 mr-2" /> You are not eligible to download the certificate</span>
-                      </button>
-                    )}
+                    <button
+                      onClick={() => generatePersonalizedPDF(user)}
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors text-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    >
+                      <span className="inline-flex items-center"><Award className="w-5 h-5 mr-2" /> Download your certificate</span>
+                    </button>
                     <div className="mt-8 text-xs text-gray-500 text-center">
                       If your name is not right, dispute it and please email us at <a href="mailto:propagation.connect@gmail.com" className="underline text-purple-700">propagation.connect@gmail.com</a>.
                     </div>
