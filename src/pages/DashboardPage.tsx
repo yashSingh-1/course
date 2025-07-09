@@ -55,6 +55,7 @@ const ALLOWED_EMAILS = [
   "mohdaltaf.aftab786@gmail.com",
   "simran999598@gmail.com",
   "ghoshurbi238@gmail.com",
+  "jitenjitu1729@gmail.com"
 ];
 
 const DashboardPage = () => {
