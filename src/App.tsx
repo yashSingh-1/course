@@ -18,6 +18,7 @@ import BlogPost from './pages/BlogPost';
 import Resources from './pages/Resources';
 import { SignInForm } from './components/SignInForm';
 import { SignUpForm } from './components/SignUpForm';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -53,6 +54,7 @@ function App() {
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/signin" element={<SignInForm />} />
             <Route path="/signup" element={<SignUpForm />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route
               path="/dashboard"
               element={

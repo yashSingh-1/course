@@ -154,7 +154,6 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, redirectUrl }
                     type="button"
                     className="text-xs text-purple-400 hover:text-purple-300 underline focus:outline-none"
                     onClick={() => setShowForgot(true)}
-                    disabled
                   >
                     Forgot password?
                   </button>
