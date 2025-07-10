@@ -56,13 +56,17 @@ const ResetPasswordPage = () => {
 
       const API_BASE_URL = 'https://propagation-be.onrender.com';
       console.log('Resetting password with token:', token);
+      console.log('Password length:', password.length);
+      
+      const requestBody = { token, newPassword: password };
+      console.log('Request body:', requestBody);
       
       const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify(requestBody),
       });
 
       console.log('Reset password response status:', response.status);
