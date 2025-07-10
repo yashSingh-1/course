@@ -112,6 +112,10 @@ const EventDetailPage: React.FC = () => {
   };
 
   const handleRegisterClick = () => {
+    if (isEventOver) {
+      return; // Don't allow registration for completed events
+    }
+    
     if (currentUser?.id) {
       setShowRegisterModal(true);
     } else {
@@ -145,6 +149,9 @@ const EventDetailPage: React.FC = () => {
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 
+  // Check if event is over
+  const isEventOver = event ? new Date(event.endDate) < new Date() : false;
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Event Header Banner */}
@@ -159,6 +166,11 @@ const EventDetailPage: React.FC = () => {
               <div className="inline-block px-3 py-1 rounded-full text-sm font-medium mb-2 bg-blue-600">
                 {event.type}
               </div>
+              {isEventOver && (
+                <div className="inline-block px-3 py-1 rounded-full text-sm font-medium mb-2 bg-gray-600 text-white">
+                  EVENT COMPLETED
+                </div>
+              )}
               <h1 className="text-3xl md:text-4xl font-bold mb-4">{event.title}</h1>
               <p className="text-xl text-blue-200 mb-6">{event.shortDesc}</p>
               
@@ -189,9 +201,14 @@ const EventDetailPage: React.FC = () => {
               
               <button
                 onClick={handleRegisterClick}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
+                disabled={isEventOver}
+                className={`px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center ${
+                  isEventOver 
+                    ? 'bg-gray-400 text-gray-700 cursor-not-allowed' 
+                    : 'bg-green-600 hover:bg-green-700 text-white'
+                }`}
               >
-                Register Now
+                {isEventOver ? 'Event Completed' : 'Register Now'}
               </button>
             </div>
             
@@ -216,8 +233,10 @@ const EventDetailPage: React.FC = () => {
                     <span className="text-gray-700">{event.location}</span>
                   </li>
                   <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-blue-600 mr-2 mt-0.5" />
-                    <span className="text-gray-700">Registration required</span>
+                    <CheckCircle className={`h-5 w-5 mr-2 mt-0.5 ${isEventOver ? 'text-gray-400' : 'text-blue-600'}`} />
+                    <span className={`${isEventOver ? 'text-gray-500' : 'text-gray-700'}`}>
+                      {isEventOver ? 'Registration closed' : 'Registration required'}
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -293,14 +312,16 @@ const EventDetailPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <div className="flex justify-center mt-12">
-                <button
-                  onClick={handleRegisterClick}
-                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
-                >
-                  Register Now
-                </button>
-              </div>
+              {!isEventOver && (
+                <div className="flex justify-center mt-12">
+                  <button
+                    onClick={handleRegisterClick}
+                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
+                  >
+                    Register Now
+                  </button>
+                </div>
+              )}
             </div>
           )}
           
@@ -357,7 +378,7 @@ const EventDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {showRegisterModal && (
+      {showRegisterModal && !isEventOver && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-2xl md:w-3/5 max-h-[80vh] overflow-y-auto relative mx-4">
             <button
