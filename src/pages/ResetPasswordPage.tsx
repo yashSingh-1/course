@@ -16,7 +16,6 @@ const ResetPasswordPage = () => {
   const [validatingToken, setValidatingToken] = useState(true);
 
   const token = searchParams.get('token');
-  const isDevelopment = process.env.NODE_ENV === 'development';
 
   useEffect(() => {
     const validateToken = async () => {
@@ -26,43 +25,11 @@ const ResetPasswordPage = () => {
         return;
       }
 
-      // Temporary development bypass - remove this when backend is ready
-      if (isDevelopment && token === 'dev-test-token') {
-        console.log('Development mode: bypassing token validation');
-        setTokenValid(true);
-        setValidatingToken(false);
-        return;
-      }
-
-      try {
-        const API_BASE_URL = 'https://propagation-be.onrender.com';
-        console.log('Validating token:', token);
-        console.log('Making request to:', `${API_BASE_URL}/api/auth/verify-reset-token`);
-        
-        const response = await fetch(`${API_BASE_URL}/api/auth/verify-reset-token`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
-
-        console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
-
-        if (response.ok) {
-          setTokenValid(true);
-        } else {
-          const data = await response.json();
-          console.log('Error response:', data);
-          setError(data.message || 'Invalid or expired reset token. Please request a new password reset.');
-        }
-      } catch (err) {
-        console.error('Token validation error:', err);
-        setError('Failed to validate reset token. Please try again.');
-      } finally {
-        setValidatingToken(false);
-      }
+      // Since verify-reset-token endpoint is not available on production,
+      // we'll skip validation and let the reset-password endpoint handle validation
+      console.log('Token found, skipping validation (endpoint not available on production)');
+      setTokenValid(true);
+      setValidatingToken(false);
     };
 
     validateToken();
@@ -85,16 +52,7 @@ const ResetPasswordPage = () => {
 
     setLoading(true);
     try {
-      // Temporary development bypass - remove this when backend is ready
-      if (isDevelopment && token === 'dev-test-token') {
-        console.log('Development mode: bypassing password reset');
-        setSuccess('Password reset successfully! Redirecting to sign in...');
-        setTimeout(() => {
-          navigate('/signin');
-        }, 2000);
-        setLoading(false);
-        return;
-      }
+      // Development bypass removed - backend is now ready
 
       const API_BASE_URL = 'https://propagation-be.onrender.com';
       console.log('Resetting password with token:', token);
@@ -109,16 +67,31 @@ const ResetPasswordPage = () => {
 
       console.log('Reset password response status:', response.status);
 
-      const data = await response.json();
-
       if (response.ok) {
         setSuccess('Password reset successfully! Redirecting to sign in...');
         setTimeout(() => {
           navigate('/signin');
         }, 2000);
       } else {
-        console.log('Reset password error response:', data);
-        setError(data.message || 'Failed to reset password. Please try again.');
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          console.log('Reset password error response:', data);
+          setError(data.message || 'Failed to reset password. Please try again.');
+        } else {
+          // Handle non-JSON responses (HTML error pages)
+          const text = await response.text();
+          console.log('Non-JSON reset response:', text.substring(0, 200) + '...');
+          
+          if (response.status === 404) {
+            setError('Password reset endpoint not found. Please contact support.');
+          } else if (response.status >= 500) {
+            setError('Server error. Please try again later.');
+          } else {
+            setError('Failed to reset password. Please try again.');
+          }
+        }
       }
     } catch (err) {
       console.error('Password reset error:', err);
