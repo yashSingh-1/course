@@ -19,6 +19,7 @@ import Resources from './pages/Resources';
 import { SignInForm } from './components/SignInForm';
 import { SignUpForm } from './components/SignUpForm';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import Speakers from './pages/Speakers';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -73,6 +74,7 @@ function App() {
               pdf: false
             }} />} />
             <Route path="/events/:eventId" element={<EventDetailPage />} />
+            <Route path="/speakers" element={<Speakers />} />
           </Routes>
         </main>
         <Footer />

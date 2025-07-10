@@ -262,12 +262,12 @@ const DashboardPage = () => {
                     <div className="text-sm text-gray-500 mb-6 text-center">
                       Download your official certificate recognizing your valuable participation and contribution.
                     </div>
-                    <button
-                      onClick={() => generatePersonalizedPDF(user)}
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors text-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-                    >
-                      <span className="inline-flex items-center"><Award className="w-5 h-5 mr-2" /> Download your certificate</span>
-                    </button>
+                      <button
+                        onClick={() => generatePersonalizedPDF(user)}
+                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors text-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      >
+                        <span className="inline-flex items-center"><Award className="w-5 h-5 mr-2" /> Download your certificate</span>
+                      </button>
                     <div className="mt-8 text-xs text-gray-500 text-center">
                       If your name is not right, dispute it and please email us at <a href="mailto:propagation.connect@gmail.com" className="underline text-purple-700">propagation.connect@gmail.com</a>.
                     </div>
