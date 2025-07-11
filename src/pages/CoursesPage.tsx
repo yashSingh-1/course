@@ -172,10 +172,10 @@ const CoursesPage = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
                 <select className="w-full p-2 border border-gray-300 rounded-md">
                   <option>All Prices</option>
-                  <option>Under $500</option>
-                  <option>$500 - $600</option>
-                  <option>$600 - $700</option>
-                  <option>Over $700</option>
+                  <option>Under ₹500</option>
+                  <option>₹500 - ₹600</option>
+                  <option>₹600 - ₹700</option>
+                  <option>Over ₹700</option>
                 </select>
               </div>
             </div>
@@ -216,7 +216,7 @@ const CoursesPage = () => {
                       <Star className="h-5 w-5 text-yellow-500" />
                       <span className="ml-1 text-gray-700">{course.rating}</span>
                     </div>
-                    <span className="font-bold text-gray-900">${course.price}</span>
+                    <span className="font-bold text-gray-900">₹{course.price}</span>
                   </div>
                   <button 
                     className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition-colors"
