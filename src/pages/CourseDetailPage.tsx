@@ -160,7 +160,7 @@ const CourseDetailPage: React.FC = () => {
               </div>
               <div className='flex justify-start items-center gap-4'>
               <button disabled className="bg-blue-600 disabled:bg-gray-400 cursor-not-allowed hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
-                Enroll Now {course.price > 0 ? `- $${course.price}` : ''}
+                Enroll Now {course.price > 0 ? `- ₹${course.price}` : ''}
               </button>
               <div className='bg-red-600 animate-pulse text-white px-8 py-3 rounded-lg font-medium transition-colors'>
                 Upcoming
@@ -337,7 +337,7 @@ const CourseDetailPage: React.FC = () => {
               </div>
               <div className="flex justify-center mt-12">
                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
-                  Enroll Now {course.price > 0 ? `- $${course.price}` : ''}
+                  Enroll Now {course.price > 0 ? `- ₹${course.price}` : ''}
                 </button>
               </div>
             </div>
