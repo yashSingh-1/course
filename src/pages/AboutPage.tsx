@@ -210,7 +210,7 @@ const AboutPage = () => {
                     <Users className="h-8 w-8 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">74+ Graduates</h3>
+                    <h3 className="font-bold text-lg">200+ Students</h3>
                     <p className="text-gray-600">Working at leading research institutions and tech companies</p>
                   </div>
                 </div>
